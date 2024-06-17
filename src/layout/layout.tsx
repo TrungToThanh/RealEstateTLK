@@ -1,12 +1,12 @@
 import { Layout } from "antd";
-import { Content, Footer, Header } from "antd/es/layout/layout";
+import { HeaderComponent } from "../components/webPC/header";
+import { ContentComponent } from "../components/webPC/content";
 
 export const LayoutComponet = () => {
   return (
     <Layout>
-      <Header className="bg-transparent">header</Header>
-      <Content>main content</Content>
-      <Footer>footer</Footer>
+      <HeaderComponent />
+      <ContentComponent />
     </Layout>
   );
 };
