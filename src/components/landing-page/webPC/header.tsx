@@ -1,8 +1,8 @@
-import { Button, Flex, Image, Menu } from "antd";
+import { Button, Flex, Image, Menu, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
 
-import logoImage from "../../assets/logo.jpg";
-import { MessageOutlined, UserOutlined } from "@ant-design/icons";
+import logoImage from "../../../assets/logo.jpg";
+import { UserOutlined } from "@ant-design/icons";
 
 export const HeaderComponent = () => {
   const menus = [
@@ -21,16 +21,18 @@ export const HeaderComponent = () => {
   ];
   return (
     <Header
-      className="bg-white text-black"
-      style={{ display: "flex", alignItems: "center" }}
+      style={{
+        display: "block",
+        alignItems: "center",
+        position: "sticky",
+        zIndex: 1,
+        width: "100%",
+        top: 0,
+        backgroundColor: "white",
+        padding: 0,
+      }}
     >
-      <Flex
-        className="w-full"
-        gap="middle"
-        align="center"
-        justify="space-between"
-        wrap
-      >
+      <Row className="w-full justify-between items-center">
         <Flex>
           <Image src={logoImage} width={100} height={60} preview={false} />
           <p className="text-[28px] font-semibold text-blue-700">
@@ -47,12 +49,11 @@ export const HeaderComponent = () => {
           />
         </Flex>
         <Flex gap={8}>
-          <Button icon={<MessageOutlined />}></Button>
           <Button type="primary" icon={<UserOutlined />}>
             Tài Khoản
           </Button>
         </Flex>
-      </Flex>
+      </Row>
     </Header>
   );
 };

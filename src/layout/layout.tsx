@@ -1,8 +1,8 @@
 import { Layout } from "antd";
-import { HeaderComponent } from "../components/webPC/header";
-import { ContentComponent } from "../components/webPC/content";
+import { HeaderComponent } from "../components/landing-page/webPC/header";
+import { ContentComponent } from "../components/landing-page/webPC/content";
 
-export const LayoutComponet = () => {
+export const LayoutComponent = () => {
   return (
     <Layout>
       <HeaderComponent />

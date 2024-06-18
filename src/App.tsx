@@ -1,8 +1,8 @@
 import "./App.css";
-import { LayoutComponet } from "./layout/layout";
+import { LayoutComponent } from "./layout/layout";
 
 function App() {
-  return <LayoutComponet></LayoutComponet>;
+  return <LayoutComponent></LayoutComponent>;
 }
 
 export default App;
