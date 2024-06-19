@@ -80,7 +80,7 @@ export const CardProductComponent = ({
           </p>,
           <p>
             <DollarOutlined />
-            <span className="text-red-500 font-bold">2,x tỷ</span>
+            <span className="text-red-500 font-bold"> 2,x tỷ</span>
           </p>,
           <p>
             <Button

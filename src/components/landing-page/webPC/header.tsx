@@ -3,8 +3,12 @@ import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../../assets/logo.jpg";
 import { UserOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { LoginComponent } from "./login";
 
 export const HeaderComponent = () => {
+  const [showLogin, setShowLogin] = useState(false);
+
   const menus = [
     {
       key: "1",
@@ -49,11 +53,18 @@ export const HeaderComponent = () => {
           />
         </Flex>
         <Flex gap={8}>
-          <Button type="primary" icon={<UserOutlined />}>
-            Tài Khoản
+          <Button
+            type="primary"
+            icon={<UserOutlined />}
+            onClick={() => setShowLogin(true)}
+          >
+            Đăng nhập
           </Button>
         </Flex>
       </Row>
+      {showLogin && (
+        <LoginComponent open={showLogin} onClose={() => setShowLogin(false)} />
+      )}
     </Header>
   );
 };
