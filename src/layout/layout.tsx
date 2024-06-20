@@ -1,12 +1,12 @@
 import { Layout } from "antd";
-import { HeaderComponent } from "../components/landing-page/webPC/header";
-import { ContentComponent } from "../components/landing-page/webPC/content";
+// import { LandingPage } from "../source/landing-page";
+import { AdminPage } from "../source/admin";
 
 export const LayoutComponent = () => {
   return (
     <Layout>
-      <HeaderComponent />
-      <ContentComponent />
+      {/* <LandingPage /> */}
+      <AdminPage />
     </Layout>
   );
 };
