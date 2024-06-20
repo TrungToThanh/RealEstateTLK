@@ -9,13 +9,10 @@ export const HeaderAdminComponent = () => {
     {
       key: "1",
       label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Nguyễn Văn An
-        </a>
+        <Row className="w-full block">
+          <Row>Xin Chào!</Row>
+          <Row>Nguyễn Văn An</Row>
+        </Row>
       ),
     },
     {
@@ -41,7 +38,7 @@ export const HeaderAdminComponent = () => {
         <Flex>
           <Image src={logoImage} width={100} height={60} preview={false} />
           <p className="text-[28px] font-semibold text-blue-700">
-            THỔ KIM <span className="text-yellow-500"> LAND </span>
+            THỔ KIM <span className="text-[#f4de8c]"> LAND </span>
           </p>
         </Flex>
         <Flex gap={8} className="flex justify-center items-center">
