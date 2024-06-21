@@ -19,6 +19,7 @@ const CreateItemComponent = () => {
 
   useEffect(() => {
     getProvinces();
+    handleProducts();
   }, []);
 
   const getProvinces = async () => {
@@ -76,6 +77,14 @@ const CreateItemComponent = () => {
         });
         setWardsOptions(options);
       });
+  };
+
+  const handleProducts = async () => {
+    setWardsOptions([]);
+    await axios.get(`https://localhost:7187/WeatherForecast`).then((res) => {
+      const list = res.data?.data;
+      console.log(list);
+    });
   };
   return (
     <Form
