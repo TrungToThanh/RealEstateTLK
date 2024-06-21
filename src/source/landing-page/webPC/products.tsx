@@ -111,6 +111,7 @@ export const ProductComponent = () => {
             align: "center",
             pageSize: pageSizeValue,
             onChange(page, pageSize) {
+              console.log(page);
               setPageSize(pageSize);
             },
           }}
