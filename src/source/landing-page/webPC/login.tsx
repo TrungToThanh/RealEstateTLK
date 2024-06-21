@@ -4,12 +4,14 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Modal, Row } from "antd";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 export const LoginComponent = ({ open, onClose }: Props) => {
+  const navigate = useNavigate();
   //   const onFinish = (values) => {
   //     console.log("Received values of form: ", values);
   //   };
@@ -56,7 +58,12 @@ export const LoginComponent = ({ open, onClose }: Props) => {
           </a>
         </Flex>
         <Row className="w-full mt-4 justify-end">
-          <Button className="w-24" type="primary" icon={<PoweroffOutlined />}>
+          <Button
+            className="w-24"
+            type="primary"
+            icon={<PoweroffOutlined />}
+            onClick={() => navigate("/admin")}
+          >
             Log in
           </Button>
         </Row>

@@ -1,8 +1,20 @@
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import { LayoutComponent } from "./layout/layout";
+import { AdminPage } from "./source/admin";
+import { LandingPage } from "./source/landing-page";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: "/admin",
+    element: <AdminPage />,
+  },
+]);
 
 function App() {
-  return <LayoutComponent></LayoutComponent>;
+  return <RouterProvider router={router} />;
 }
 
 export default App;

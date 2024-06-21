@@ -3,8 +3,10 @@ import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../../assets/logo.jpg";
 import { BellOutlined, MessageOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export const HeaderAdminComponent = () => {
+  const navigate = useNavigate();
   const items = [
     {
       key: "1",
@@ -18,7 +20,7 @@ export const HeaderAdminComponent = () => {
     {
       key: "2",
       danger: true,
-      label: "Thoát",
+      label: <p onClick={() => navigate("/")}>Thoát </p>,
     },
   ];
   return (
@@ -37,7 +39,7 @@ export const HeaderAdminComponent = () => {
       <Row className="w-full justify-between items-center">
         <Flex>
           <Image src={logoImage} width={100} height={60} preview={false} />
-          <p className="text-[28px] font-semibold text-blue-700">
+          <p className="text-[28px] font-semibold text-blue-700 px-2">
             THỔ KIM <span className="text-[#f4de8c]"> LAND </span>
           </p>
         </Flex>
