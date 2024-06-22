@@ -14,14 +14,15 @@ import { GetProvinces } from "../api/get-provinces";
 import { GetDistricts } from "../api/get-districts";
 import { GetWards } from "../api/get-wards";
 import { useForm } from "antd/es/form/Form";
-import { DefaultOptionType } from "antd/es/select";
+// import { DefaultOptionType } from "antd/es/select";
+import axios from "axios";
 
 export const SearchComponent = () => {
   const [provincesOption, setProvincesOptions] = useState([]);
   const [districtsOption, setDistrictsOptions] = useState([]);
   const [wardsOption, setWardsOptions] = useState([]);
-
-  const [squares, setSquares] = useState<DefaultOptionType[]>();
+  const [dataTest, setDataTest] = useState("");
+  // const [squares, setSquares] = useState<DefaultOptionType[]>();
   const [square, setSquare] = useState("");
 
   const [form] = useForm();
@@ -75,6 +76,13 @@ export const SearchComponent = () => {
     }, 0);
   };
 
+  const getWeather = async () => {
+    const url = "https://localhost:7187/WeatherForecast";
+    await axios.get(url).then((data) => {
+      setDataTest(data.data?.at(0).date || "");
+    });
+  };
+
   return (
     <Form
       name="basic"
@@ -91,6 +99,7 @@ export const SearchComponent = () => {
         square: "100m2",
       }}
     >
+      <div>1212 ${dataTest}</div>
       <Space.Compact size="large">
         <Form.Item className="font-bold" label="Tỉnh/TP:" name="provinces">
           <Select
@@ -114,7 +123,7 @@ export const SearchComponent = () => {
         <Form.Item className="font-bold" label="Diện tích:" name="square">
           <Select
             style={{ width: 180 }}
-            options={squares || []}
+            options={[]}
             popupClassName="!w-[400px]"
             className="w-[400px]"
             dropdownRender={(menu) => (
@@ -168,7 +177,12 @@ export const SearchComponent = () => {
           />
         </Form.Item>
         <Form.Item label=" " name=" ">
-          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            icon={<SearchOutlined />}
+            onClick={getWeather}
+          >
             Tìm Kiếm
           </Button>
         </Form.Item>
