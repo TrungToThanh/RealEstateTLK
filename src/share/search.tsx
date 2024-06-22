@@ -16,6 +16,7 @@ import { GetWards } from "../api/get-wards";
 import { useForm } from "antd/es/form/Form";
 // import { DefaultOptionType } from "antd/es/select";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const SearchComponent = () => {
   const [provincesOption, setProvincesOptions] = useState([]);
@@ -77,7 +78,7 @@ export const SearchComponent = () => {
   };
 
   const getWeather = async () => {
-    const url = "https://localhost:7187/WeatherForecast";
+    const url = `${apiUrl}/WeatherForecast`;
     await axios.get(url).then((data) => {
       setDataTest(data.data?.at(0).date || "");
     });
