@@ -5,13 +5,18 @@ import {
   BarsOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalContact } from "../../../share/modal-contact";
+import { GetProducts } from "../../../api/get-products";
 
 export const ProductComponent = () => {
   const [pageSizeValue, setPageSize] = useState(8);
   const [showList, setShowList] = useState(true); //false: show table
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    GetProducts();
+  }, []);
 
   const fakeArray = Array(100)
     .fill({
