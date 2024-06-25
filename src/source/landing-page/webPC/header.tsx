@@ -2,16 +2,19 @@ import { Button, Flex, Image, Input } from "antd";
 import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../../assets/logo.jpg";
-import { UserOutlined } from "@ant-design/icons";
+import { FormOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { LoginComponent } from "./login";
 import { useMediaQuery } from "react-responsive";
 import { SearchComponent } from "../../../share/search";
+import { CreateItemComponent } from "../../../share/create-item";
 
 const { Search } = Input;
 
 export const HeaderComponent = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const [showCreateItem, setShowCreateItem] = useState(false);
+
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1224px)",
   });
@@ -22,16 +25,25 @@ export const HeaderComponent = () => {
         <Flex className="w-full justify-between items-center" wrap>
           <Flex>
             <Image src={logoImage} width={100} height={60} preview={false} />
-            <p className="text-[28px] font-semibold text-blue-700">
+            <p
+              className={`${
+                isDesktopOrLaptop ? "text-[28px]" : "text-[18px]"
+              } font-semibold text-blue-700`}
+            >
               THỔ KIM <span className="text-yellow-500"> LAND </span>
             </p>
           </Flex>
-          <Flex className="px-2">
+          <Flex className="px-2" gap={8}>
             <Button
               type="primary"
-              icon={<UserOutlined />}
-              onClick={() => setShowLogin(true)}
+              ghost
+              icon={<FormOutlined />}
+              iconPosition="end"
+              onClick={() => setShowCreateItem(true)}
             >
+              Tạo tin
+            </Button>
+            <Button icon={<UserOutlined />} onClick={() => setShowLogin(true)}>
               {isDesktopOrLaptop ? "Đăng nhập" : ""}
             </Button>
           </Flex>
@@ -51,6 +63,14 @@ export const HeaderComponent = () => {
       </div>
       {showLogin && (
         <LoginComponent open={showLogin} onClose={() => setShowLogin(false)} />
+      )}
+      {showCreateItem && (
+        <>
+          <CreateItemComponent
+            open={showCreateItem}
+            onClose={() => setShowCreateItem(false)}
+          />
+        </>
       )}
     </Header>
   );
