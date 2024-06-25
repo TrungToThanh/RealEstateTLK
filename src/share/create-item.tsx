@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   Space,
+  message,
 } from "antd";
 import Upload from "antd/es/upload/Upload";
 import dayjs from "dayjs";
@@ -16,6 +17,7 @@ import { useForm } from "antd/es/form/Form";
 import { GetDistricts, GetProvinces, GetWards } from "../api/location";
 import { Product } from "../types/types";
 import { createProduct } from "../api/product";
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   open: boolean;
@@ -54,11 +56,36 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
 
   const onFinish = async (values: Product) => {
     const valuesSubmit = {
-      ...values,
-      images: [],
+      id: 0,
+      productId: uuidv4(),
+      title: values.title,
+      description: values.description || "",
+      square: values.square?.toString() || "",
+      frontwidth: values.frontWidth?.toString() || "",
+      backwidth: values.backWidth?.toString() || "",
+      length: values.length?.toString() || "",
+      price: values.price || 0,
+      province: values.province || "",
+      district: values.district || "",
+      ward: values.ward || "",
+      location: values.location || "",
+      status: 0,
+      createdBy: values.createdAt || "",
+      createdAt: dayjs().toISOString(),
+      images: [""],
     };
     const res = await createProduct(valuesSubmit);
-    console.log("Success:", values, res);
+    if (res) {
+      message.success("Thành công!");
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } else {
+      message.error("Thất bại!");
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
   };
 
   return (

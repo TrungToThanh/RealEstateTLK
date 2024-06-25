@@ -129,10 +129,11 @@ export const ProductComponent = () => {
             xl: 3,
             xxl: 4,
           }}
+          className="mt-20"
           dataSource={fakeArray}
           renderItem={() => (
             <List.Item>
-              <div className="w-full mx-2">
+              <div className="px-2">
                 <CardProductComponent setOpen={(value) => setOpen(value)} />
               </div>
             </List.Item>

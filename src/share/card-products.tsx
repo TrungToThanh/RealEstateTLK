@@ -1,7 +1,6 @@
 import {
   DollarOutlined,
   EnvironmentOutlined,
-  EyeOutlined,
   GatewayOutlined,
   PhoneOutlined,
   PictureOutlined,
@@ -55,13 +54,9 @@ export const CardProductComponent = ({
               />
             </Watermark>
             <Space className="w-full flex justify-between px-2" size={4}>
-              <div className="w-[96%] text-end absolute -mt-44 z-10">
-                <p></p>
+              <div className="w-[96%] text-end absolute -mt-36 z-10">
                 <p className="block">
-                  <p className="text-red-500">
-                    380 <EyeOutlined />
-                  </p>
-                  <p className="w-full flex text-start justify-between absolute mt-[126px] -mx-1 z-10">
+                  <p className="w-full flex text-start justify-between absolute mt-[116px] -mx-1 z-10">
                     <Button icon={<EnvironmentOutlined />} size="small">
                       Thụy Hương
                     </Button>

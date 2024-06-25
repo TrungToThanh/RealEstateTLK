@@ -4,6 +4,7 @@ import {
   WhatsAppOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Modal, Rate, Space } from "antd";
+import { useMediaQuery } from "react-responsive";
 
 type ModalContact = {
   open: boolean;
@@ -11,6 +12,10 @@ type ModalContact = {
 };
 
 export const ModalContact = ({ open, onClose }: ModalContact) => {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+
   return (
     <Modal
       title="Liên hệ:"
@@ -32,7 +37,9 @@ export const ModalContact = ({ open, onClose }: ModalContact) => {
             <Rate defaultValue={3} allowClear={false} className="text-xs" />
           </div>
         </p>
-        <Space.Compact>
+        <Space.Compact
+          direction={isDesktopOrLaptop ? "horizontal" : "vertical"}
+        >
           <Button icon={<MessageOutlined />}> Nhắn tin </Button>
           <Button icon={<PhoneOutlined />}> Gọi </Button>
           <Button icon={<WhatsAppOutlined />}> Zalo </Button>

@@ -1,5 +1,3 @@
-import { ProductStatus } from "../const/const";
-
 export type NotificationType = "success" | "info" | "warning" | "error";
 
 export interface Product {
@@ -16,8 +14,8 @@ export interface Product {
   district?: string; // Optional field
   ward?: string; // Optional field
   location?: string; // Optional field
-  status: ProductStatus;
+  status: number;
   createdBy?: string; // Optional field
-  createdAt: Date; // Can be string if using ISO date strings
+  createdAt: string; // Can be string if using ISO date strings
   images: string[];
 }
