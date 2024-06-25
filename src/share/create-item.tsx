@@ -1,12 +1,21 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, Divider, Form, Input, InputNumber, Modal, Select } from "antd";
+import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Space,
+} from "antd";
 import Upload from "antd/es/upload/Upload";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { GetProvinces } from "../api/get-provinces";
-import { GetDistricts } from "../api/get-districts";
-import { GetWards } from "../api/get-wards";
 import { useForm } from "antd/es/form/Form";
+import { GetDistricts, GetProvinces, GetWards } from "../api/location";
+import { Product } from "../types/types";
+import { createProduct } from "../api/product";
 
 type Props = {
   open: boolean;
@@ -43,6 +52,15 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
     setWardsOptions(wards);
   };
 
+  const onFinish = async (values: Product) => {
+    const valuesSubmit = {
+      ...values,
+      images: [],
+    };
+    const res = await createProduct(valuesSubmit);
+    console.log("Success:", values, res);
+  };
+
   return (
     <>
       <Modal
@@ -53,6 +71,9 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
         className="w-full gap-0"
       >
         <Form
+          form={form}
+          name="control-hooks"
+          onFinish={onFinish}
           layout="vertical"
           scrollToFirstError
           title="Đăng tin mới"
@@ -65,10 +86,6 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
           }}
           className="w-full justify-center gap-0"
         >
-          <Form.Item label="Mã sản phẩm" name="id">
-            <Input placeholder="001" readOnly />
-          </Form.Item>
-
           <Form.Item
             label="Tiêu đề bài đăng"
             rules={[
@@ -80,7 +97,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
             ]}
             hasFeedback
             validateTrigger={["onChange", "onBlur"]}
-            name="name"
+            name="title"
           >
             <Input placeholder="Tiêu đề" showCount maxLength={50} />
           </Form.Item>
@@ -104,51 +121,111 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               maxLength={200}
             />
           </Form.Item>
-          <Form.Item
-            label="Diện tích:"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng điền đầy đủ thông tin",
-              },
-            ]}
-            hasFeedback
-            validateTrigger={["onChange", "onBlur"]}
-            name="square"
-          >
-            <InputNumber
-              placeholder="diện tích"
-              addonAfter="m2"
-              maxLength={5}
-              className="w-full"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Giá"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng điền đầy đủ thông tin",
-              },
-            ]}
-            hasFeedback
-            validateTrigger={["onChange", "onBlur"]}
-            name="price"
-          >
-            <InputNumber<number>
-              defaultValue={1000}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) =>
-                value?.replace(/\$\s?|(,*)/g, "") as unknown as number
-              }
-              className="w-full"
-              addonAfter="VNĐ"
-            />
-          </Form.Item>
-
-          <Divider orientation="left">Vị trí</Divider>
+          <Space className="w-full justify-between m-0 p-0 gap-2">
+            <Form.Item
+              label="Diện tích:"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="square"
+            >
+              <InputNumber
+                placeholder="diện tích"
+                addonAfter="m2"
+                maxLength={5}
+                className="w-full max-w-32"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Giá"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="price"
+            >
+              <InputNumber<number>
+                defaultValue={1000}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) =>
+                  value?.replace(/\$\s?|(,*)/g, "") as unknown as number
+                }
+                className="w-full"
+                addonAfter="VNĐ"
+              />
+            </Form.Item>
+          </Space>
+          <Space>
+            <Form.Item
+              label="Mặt trước"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="frontwidth"
+            >
+              <InputNumber
+                placeholder="Mặt trước"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full max-w-32"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Mặt sau"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="backwidth"
+            >
+              <InputNumber
+                placeholder="Mặt sau"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full max-w-32"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Chiều dài"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="length"
+            >
+              <InputNumber
+                placeholder="Chiều dài"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full max-w-32"
+              />
+            </Form.Item>
+          </Space>
+          <Divider orientation="left">Vị trí:</Divider>
 
           <Form.Item
             label="Tỉnh/Thành Phố"
@@ -198,7 +275,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
                 message: "Vui lòng điền đầy đủ thông tin",
               },
             ]}
-            name="commune"
+            name="ward"
             hasFeedback
             validateTrigger={["onChange", "onBlur"]}
           >
@@ -216,7 +293,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
             ]}
             hasFeedback
             validateTrigger={["onChange", "onBlur"]}
-            name="googleMap"
+            name="location"
           >
             <Input placeholder="Link google map" />
           </Form.Item>
@@ -225,22 +302,28 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
           <Form.Item
             label="Ảnh (Tối đa 5 ảnh):"
             valuePropName="fileList"
-            rules={[{ required: true }]}
+            // rules={[{ required: true }]}
+            name="images"
           >
             <Upload listType="picture-card" maxCount={5} onPreview={() => true}>
-              <button style={{ border: 0, background: "none" }} type="button">
+              <Button style={{ border: 0, background: "none" }}>
                 <PlusOutlined />
                 <div style={{ marginTop: 8 }}>Tải ảnh</div>
-              </button>
+              </Button>
             </Upload>
           </Form.Item>
-
-          <Divider />
-          <div className="text-end">
-            <Button type="primary" htmlType="submit">
-              Đăng tin
-            </Button>
-          </div>
+          <Form.Item>
+            <Space className="w-full justify-center">
+              <Button
+                type="primary"
+                htmlType="submit"
+                ghost
+                icon={<PlusCircleOutlined />}
+              >
+                Tạo tin mới
+              </Button>
+            </Space>
+          </Form.Item>
         </Form>
       </Modal>
     </>

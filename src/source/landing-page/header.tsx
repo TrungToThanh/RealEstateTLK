@@ -1,14 +1,14 @@
 import { Button, Flex, Image, Input, notification } from "antd";
 import { Header } from "antd/es/layout/layout";
 
-import logoImage from "../../../assets/logo.jpg";
+import logoImage from "../../assets/logo.jpg";
 import { FormOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { LoginComponent } from "./login";
+import { LoginComponent } from "../../share/login";
 import { useMediaQuery } from "react-responsive";
-import { SearchComponent } from "../../../share/search";
-import { CreateItemComponent } from "../../../share/create-item";
-import { NotificationType } from "../../../const/const";
+import { SearchComponent } from "../../share/search";
+import { CreateItemComponent } from "../../share/create-item";
+import { NotificationType } from "../../types/types";
 
 const { Search } = Input;
 export const HeaderComponent = () => {

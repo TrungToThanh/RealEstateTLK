@@ -2,7 +2,7 @@ import { Button, Drawer, Flex, Layout, Menu } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { ProductComponent } from "../../landing-page/webPC/products";
+import { ProductComponent } from "../../../share/products";
 import { EmployeeComponent } from "../component/employee";
 import { AccountComponent } from "../component/account";
 import CreateItemComponent from "../component/create-item";

@@ -1,4 +1,4 @@
-import { ProductComponent } from "./products";
+import { ProductComponent } from "../../share/products";
 import { Content } from "antd/es/layout/layout";
 
 export const ContentComponent = () => {

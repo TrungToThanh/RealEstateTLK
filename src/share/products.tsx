@@ -1,13 +1,13 @@
 import { Avatar, Button, Flex, List, Segmented, Space, Table } from "antd";
-import { CardProductComponent } from "../../../share/card-products";
+import { CardProductComponent } from "./card-products";
 import {
   AppstoreOutlined,
   BarsOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { ModalContact } from "../../../share/modal-contact";
-import { GetProducts } from "../../../api/get-products";
+import { ModalContact } from "./modal-contact";
+import { getProducts } from "../api/product";
 
 export const ProductComponent = () => {
   const [pageSizeValue, setPageSize] = useState(8);
@@ -15,7 +15,7 @@ export const ProductComponent = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    GetProducts();
+    getProducts();
   }, []);
 
   const fakeArray = Array(100)

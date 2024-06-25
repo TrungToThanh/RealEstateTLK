@@ -1,6 +1,6 @@
 import { Layout } from "antd";
-import { HeaderComponent } from "./webPC/header";
-import { ContentComponent } from "./webPC/content";
+import { HeaderComponent } from "./header";
+import { ContentComponent } from "./content";
 
 export const LandingPage = () => {
   return (

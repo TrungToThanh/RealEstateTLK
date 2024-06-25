@@ -10,12 +10,10 @@ import {
   Space,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { GetProvinces } from "../api/get-provinces";
-import { GetDistricts } from "../api/get-districts";
-import { GetWards } from "../api/get-wards";
 import { useForm } from "antd/es/form/Form";
 // import { DefaultOptionType } from "antd/es/select";
 import axios from "axios";
+import { GetDistricts, GetProvinces, GetWards } from "../api/location";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const SearchComponent = () => {
