@@ -1,4 +1,4 @@
-import { Button, Flex, Image, Input } from "antd";
+import { Button, Flex, Image, Input, notification } from "antd";
 import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../../assets/logo.jpg";
@@ -8,9 +8,9 @@ import { LoginComponent } from "./login";
 import { useMediaQuery } from "react-responsive";
 import { SearchComponent } from "../../../share/search";
 import { CreateItemComponent } from "../../../share/create-item";
+import { NotificationType } from "../../../const/const";
 
 const { Search } = Input;
-
 export const HeaderComponent = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
@@ -19,8 +19,18 @@ export const HeaderComponent = () => {
     query: "(min-width: 1224px)",
   });
 
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = (type: NotificationType) => {
+    api[type]({
+      message: "Thông báo",
+      description: "Bạn chưa đăng nhập!",
+    });
+  };
+
   return (
     <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0">
+      {contextHolder}
       <div className="bg-white">
         <Flex className="w-full justify-between items-center" wrap>
           <Flex>
@@ -39,7 +49,14 @@ export const HeaderComponent = () => {
               ghost
               icon={<FormOutlined />}
               iconPosition="end"
-              onClick={() => setShowCreateItem(true)}
+              onClick={() => {
+                const isLogin = sessionStorage.getItem("login");
+                if (isLogin === "true") {
+                  setShowCreateItem(true);
+                } else {
+                  openNotificationWithIcon("error");
+                }
+              }}
             >
               Tạo tin
             </Button>
