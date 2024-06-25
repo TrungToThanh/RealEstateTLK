@@ -21,10 +21,10 @@ export const CardProductComponent = ({
     <>
       <Card
         hoverable
-        style={{ width: 300 }}
+        className="w-full"
         cover={
           <>
-            <div className="w-[96%] justify-between flex text-start my-2">
+            <div className="w-full justify-between flex text-start my-2">
               <Space className="w-full px-1 justify-between">
                 <p className="flex items-center my-auto">
                   <Avatar

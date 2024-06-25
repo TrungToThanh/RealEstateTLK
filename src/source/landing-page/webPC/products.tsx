@@ -122,17 +122,19 @@ export const ProductComponent = () => {
           }}
           grid={{
             gutter: 16,
-            xs: 2,
-            sm: 2,
-            md: 3,
+            xs: 1,
+            sm: 1,
+            md: 2,
             lg: 3,
-            xl: 4,
+            xl: 3,
             xxl: 4,
           }}
           dataSource={fakeArray}
           renderItem={() => (
             <List.Item>
-              <CardProductComponent setOpen={(value) => setOpen(value)} />
+              <div className="w-full mx-2">
+                <CardProductComponent setOpen={(value) => setOpen(value)} />
+              </div>
             </List.Item>
           )}
         />

@@ -1,4 +1,4 @@
-import { Button, Flex, Image, Menu, Row } from "antd";
+import { Button, Flex, Image } from "antd";
 import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../../assets/logo.jpg";
@@ -8,21 +8,6 @@ import { LoginComponent } from "./login";
 
 export const HeaderComponent = () => {
   const [showLogin, setShowLogin] = useState(false);
-
-  const menus = [
-    {
-      key: "1",
-      label: "Trang Chủ",
-    },
-    {
-      key: "2",
-      label: "Sản phẩm",
-    },
-    {
-      key: "3",
-      label: "Liên hệ",
-    },
-  ];
   return (
     <Header
       style={{
@@ -36,21 +21,12 @@ export const HeaderComponent = () => {
         padding: 0,
       }}
     >
-      <Row className="w-full justify-between items-center">
+      <Flex className="w-full justify-between items-center" wrap>
         <Flex>
           <Image src={logoImage} width={100} height={60} preview={false} />
           <p className="text-[28px] font-semibold text-blue-700">
             THỔ KIM <span className="text-yellow-500"> LAND </span>
           </p>
-        </Flex>
-        <Flex>
-          <Menu
-            direction="rtl"
-            mode="horizontal"
-            defaultSelectedKeys={["1"]}
-            items={menus}
-            style={{ flex: 1, minWidth: 0 }}
-          />
         </Flex>
         <Flex gap={8}>
           <Button
@@ -61,7 +37,7 @@ export const HeaderComponent = () => {
             Đăng nhập
           </Button>
         </Flex>
-      </Row>
+      </Flex>
       {showLogin && (
         <LoginComponent open={showLogin} onClose={() => setShowLogin(false)} />
       )}

@@ -1,12 +1,14 @@
-import { Layout } from "antd";
-import { HeaderComponent } from "./webPC/header";
-import { ContentComponent } from "./webPC/content";
+import { useMediaQuery } from "react-responsive";
+import { WebLandingPage } from "./webPC";
+import { MobileLandingPage } from "./mobile/index,";
 
 export const LandingPage = () => {
-  return (
-    <Layout>
-      <HeaderComponent />
-      <ContentComponent />
-    </Layout>
-  );
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+
+  if (isDesktopOrLaptop) {
+    return <WebLandingPage />;
+  }
+  return <MobileLandingPage />;
 };
