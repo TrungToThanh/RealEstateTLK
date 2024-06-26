@@ -1,11 +1,11 @@
 import { Layout } from "antd";
-import { HeaderAdminComponent } from "./webPC/header";
 import { ContentAdminComponent } from "./webPC/content";
+import { HeaderComponent } from "../landing-page/header";
 
 export const AdminPage = () => {
   return (
-    <Layout>
-      <HeaderAdminComponent />
+    <Layout className="bg-white">
+      <HeaderComponent />
       <ContentAdminComponent />
     </Layout>
   );

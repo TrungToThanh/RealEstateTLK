@@ -1,11 +1,13 @@
 import { Button, Drawer, Flex, Layout, Menu } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  UnorderedListOutlined,
+  UserAddOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
-import { ProductComponent } from "../../../share/products";
-import { EmployeeComponent } from "../component/employee";
-import { AccountComponent } from "../component/account";
-import CreateItemComponent from "../component/create-item";
+import { CreateNewUserComponent } from "../../../share/create-user";
+import { EmployeesComponent } from "../../../share/employee";
 
 export const ContentAdminComponent = () => {
   const [open, setOpen] = useState(false);
@@ -21,52 +23,28 @@ export const ContentAdminComponent = () => {
   const sideBarMenu = [
     {
       key: "1",
-      icon: <UserOutlined />,
-      label: "Đăng tin mới",
+      icon: <UserAddOutlined />,
+      label: "Tạo nhân sự mới",
     },
     {
       key: "2",
-      icon: <UserOutlined />,
-      label: "Kiểm duyệt tin",
-    },
-    {
-      key: "3",
-      icon: <UserOutlined />,
-      label: "Quản lý sản phẩm",
-    },
-    {
-      key: "4",
-      icon: <UserOutlined />,
-      label: "Nhân sự",
-    },
-    {
-      key: "5",
-      icon: <UserOutlined />,
-      label: "Tài khoản",
+      icon: <UserSwitchOutlined />,
+      label: "Quản trị nhân sự",
     },
   ];
 
   const renderComponent = () => {
     if (key === "1") {
-      return <CreateItemComponent />;
+      return <CreateNewUserComponent />;
     }
     if (key === "2") {
-      return <ProductComponent />;
-    }
-    if (key === "3") {
-      return <ProductComponent />;
-    }
-    if (key === "4") {
-      return <EmployeeComponent />;
-    }
-    if (key === "5") {
-      return <AccountComponent />;
+      return <EmployeesComponent />;
     }
     return <></>;
   };
 
   return (
-    <Layout className="!bg-white">
+    <Layout className="!bg-white mt-16 max-w-[1200px]">
       <div className="relative overflow-hidden mt-4">
         <Flex className="w-full justify-start items-center ">
           <Button
@@ -78,7 +56,6 @@ export const ContentAdminComponent = () => {
             {sideBarMenu.find((item) => item.key === key)?.label}
           </div>
         </Flex>
-
         <Drawer
           title="Công cụ"
           placement="left"
@@ -86,10 +63,12 @@ export const ContentAdminComponent = () => {
           onClose={onClose}
           open={open}
           getContainer={false}
+          className="!w-[230px] !m-0 !p-0"
+          styles={{ body: { padding: 0, margin: 0 } }}
         >
           <Menu
             mode="inline"
-            className="w-[360px]"
+            className="w-full"
             defaultSelectedKeys={["1"]}
             defaultOpenKeys={["1"]}
             items={sideBarMenu}
@@ -99,7 +78,10 @@ export const ContentAdminComponent = () => {
           />
         </Drawer>
 
-        <Layout style={{ padding: "0 24px 24px", backgroundColor: "white" }}>
+        <Layout
+          style={{ padding: "0 24px 24px", backgroundColor: "white" }}
+          className="w-full"
+        >
           <Content
             style={{
               padding: 24,

@@ -4,7 +4,7 @@ import { ContentComponent } from "./content";
 
 export const LandingPage = () => {
   return (
-    <Layout>
+    <Layout className="bg-white">
       <HeaderComponent />
       <ContentComponent />
     </Layout>

@@ -19,3 +19,11 @@ export interface Product {
   createdAt: string; // Can be string if using ISO date strings
   images: string[];
 }
+
+export type Profile = {
+  id?: string;
+  email: string;
+  name: string;
+  password?: string;
+  numberPhone: number;
+};

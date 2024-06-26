@@ -1,36 +1,92 @@
-import { Button, Flex, Image, Input, notification } from "antd";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Dropdown,
+  Flex,
+  Image,
+  Input,
+  message,
+} from "antd";
 import { Header } from "antd/es/layout/layout";
 
 import logoImage from "../../assets/logo.jpg";
-import { FormOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  FormOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  ProductOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { LoginComponent } from "../../share/login";
 import { useMediaQuery } from "react-responsive";
 import { SearchComponent } from "../../share/search";
 import { CreateItemComponent } from "../../share/create-item";
-import { NotificationType } from "../../types/types";
+import supabase from "../../utils/supabaseClient";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 export const HeaderComponent = () => {
+  const navigator = useNavigate();
+  const location = useLocation();
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
+  console.log(navigator.name);
+  const isHideSearchBar = location.pathname?.includes("/admin");
+  const isLogin = sessionStorage.getItem("login") === "true";
 
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1224px)",
   });
 
-  const [api, contextHolder] = notification.useNotification();
-
-  const openNotificationWithIcon = (type: NotificationType) => {
-    api[type]({
-      message: "Thông báo",
-      description: "Bạn chưa đăng nhập!",
-    });
-  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.antgroup.com"
+        >
+          <div>XIN CHÀO!</div>
+          {sessionStorage.getItem("TKL_login_user")}
+          <Divider className="m-0" />
+        </a>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div className="text-blue-800">
+          <ProductOutlined /> Quản trị
+          <Divider className="m-0" />
+        </div>
+      ),
+      onClick: async () => {
+        if (isLogin) {
+          navigator("/admin");
+        }
+      },
+    },
+    {
+      key: "3",
+      danger: true,
+      label: (
+        <>
+          <LogoutOutlined /> Đăng xuất
+        </>
+      ),
+      onClick: async () => {
+        await supabase.auth.signOut();
+        sessionStorage.setItem("login", "false");
+        message.success("Bạn đã đăng xuất!");
+      },
+    },
+  ];
 
   return (
-    <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0">
-      {contextHolder}
+    <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0 max-w-[1200px]">
       <div className="bg-white">
         <Flex className="w-full justify-between items-center" wrap>
           <Flex>
@@ -50,33 +106,47 @@ export const HeaderComponent = () => {
               icon={<FormOutlined />}
               iconPosition="end"
               onClick={() => {
-                const isLogin = sessionStorage.getItem("login");
-                if (isLogin === "true") {
-                  setShowCreateItem(true);
+                if (!isLogin) {
+                  message.error("Bạn chưa đăng nhập!");
                 } else {
-                  openNotificationWithIcon("error");
+                  setShowCreateItem(true);
                 }
               }}
             >
               Tạo tin
             </Button>
-            <Button icon={<UserOutlined />} onClick={() => setShowLogin(true)}>
-              {isDesktopOrLaptop ? "Đăng nhập" : ""}
-            </Button>
+            {isLogin ? (
+              <Dropdown menu={{ items }} className="mt-1">
+                <Avatar
+                  style={{ backgroundColor: "#87d068" }}
+                  icon={<UserOutlined />}
+                  size={"small"}
+                />
+              </Dropdown>
+            ) : (
+              <Button
+                icon={<LoginOutlined />}
+                onClick={() => setShowLogin(true)}
+              >
+                {isDesktopOrLaptop ? "Đăng nhập" : ""}
+              </Button>
+            )}
           </Flex>
         </Flex>
-        <Flex className="p-2">
-          {isDesktopOrLaptop ? (
-            <SearchComponent />
-          ) : (
-            <Search
-              placeholder="input search text"
-              allowClear
-              className="w-full m-0 p-0"
-              style={{ width: "100%" }}
-            />
-          )}
-        </Flex>
+        {!isHideSearchBar && (
+          <Flex className="p-2">
+            {isDesktopOrLaptop ? (
+              <SearchComponent />
+            ) : (
+              <Search
+                placeholder="input search text"
+                allowClear
+                className="w-full m-0 p-0"
+                style={{ width: "100%" }}
+              />
+            )}
+          </Flex>
+        )}
       </div>
       {showLogin && (
         <LoginComponent open={showLogin} onClose={() => setShowLogin(false)} />

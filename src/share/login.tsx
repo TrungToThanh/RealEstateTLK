@@ -1,23 +1,39 @@
 import {
   LockOutlined,
-  PoweroffOutlined,
+  PlusCircleOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Flex, Form, Input, Modal, Result, Row } from "antd";
+import { Button, Form, Input, Modal, Row, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useForm } from "antd/es/form/Form";
+import supabase from "../utils/supabaseClient";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 export const LoginComponent = ({ open, onClose }: Props) => {
-  const [isShowResult, setShowResult] = useState(false);
-  const [isLoginSuccess, setLogin] = useState(false);
+  const [form] = useForm();
 
-  useEffect(() => {
-    sessionStorage.setItem("login", "false");
-  }, []);
+  const onFinish = async (values: { email: string; password: string }) => {
+    console.log("values", values);
+    const { data } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+    if (data?.user?.id) {
+      message.success("Đăng nhập thành công!");
+      sessionStorage.setItem("login", "true");
+      sessionStorage.setItem("TKL_login_user", data.user?.email || "");
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } else {
+      message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
+      sessionStorage.setItem("login", "false");
+      sessionStorage.setItem("TKL_login_user", "");
+    }
+  };
 
   return (
     <>
@@ -28,68 +44,50 @@ export const LoginComponent = ({ open, onClose }: Props) => {
         title="Đăng nhập tài khoản"
         className="max-w-[350px]"
       >
-        {isShowResult ? (
-          <Result
-            status={isLoginSuccess ? "success" : "error"}
-            title="Thông tin đăng nhập"
-            subTitle={
-              isLoginSuccess ? "Đăng nhập thành công!" : "Đăng nhập thất bại!"
-            }
-          />
-        ) : (
-          <Form
-            name="normal_login"
-            initialValues={{ remember: true }}
-            layout="vertical"
-            className="mt-4"
+        <Form
+          name="normal_login"
+          initialValues={{ remember: true }}
+          layout="vertical"
+          className="mt-4"
+          form={form}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            label="Email:"
+            name="email"
+            rules={[{ required: true, message: "Hãy nhập email của bạn" }]}
           >
-            <Form.Item
-              label="Tài khoản:"
-              name="username"
-              rules={[{ required: true, message: "Hãy nhập tài khoản" }]}
-            >
-              <Input prefix={<UserOutlined />} placeholder="Tài khoản" />
-            </Form.Item>
-            <Form.Item
-              label="Mật khẩu:"
-              name="password"
-              rules={[{ required: true, message: "Hãy nhập mật khẩu" }]}
-              className="-mt-2"
-            >
-              <Input
-                prefix={<LockOutlined />}
-                type="password"
-                placeholder="Mật khẩu"
-              />
-            </Form.Item>
-            <Flex className="w-full justify-between -mt-2">
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
+            <Input prefix={<UserOutlined />} placeholder="Email" />
+          </Form.Item>
+          <Form.Item
+            label="Mật khẩu:"
+            name="password"
+            rules={[{ required: true, message: "Hãy nhập mật khẩu" }]}
+            className="-mt-2"
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              type="password"
+              placeholder="Mật khẩu"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Space className="w-full justify-between">
               <a className="login-form-forgot" href="">
-                Forgot password
+                Quên mật khẩu
               </a>
-            </Flex>
-            <Row className="w-full mt-4 justify-end">
               <Button
-                className="w-24"
                 type="primary"
-                icon={<PoweroffOutlined />}
-                onClick={() => {
-                  sessionStorage.setItem("login", "true");
-                  setShowResult(true);
-                  setLogin(true);
-                  setTimeout(() => {
-                    onClose();
-                  }, 1500);
-                  // navigate("/admin");
-                }}
+                htmlType="submit"
+                ghost
+                icon={<PlusCircleOutlined />}
               >
-                Log in
+                Đăng nhập
               </Button>
-            </Row>
-          </Form>
-        )}
+            </Space>
+          </Form.Item>
+          <Row className="w-full mt-4 justify-end"></Row>
+        </Form>
       </Modal>
     </>
   );
