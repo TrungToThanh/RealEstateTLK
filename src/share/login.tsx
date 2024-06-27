@@ -23,15 +23,17 @@ export const LoginComponent = ({ open, onClose }: Props) => {
     });
     if (data?.user?.id) {
       message.success("Đăng nhập thành công!");
-      sessionStorage.setItem("login", "true");
-      sessionStorage.setItem("TKL_login_user", data.user?.email || "");
+      sessionStorage.setItem("TKL_login", "true");
+      sessionStorage.setItem("TKL_login_email", data.user?.email || "");
+      sessionStorage.setItem("TKL_login_user", data.user?.id || "");
       setTimeout(() => {
         onClose();
       }, 500);
     } else {
       message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
-      sessionStorage.setItem("login", "false");
+      sessionStorage.setItem("TKL_login", "false");
       sessionStorage.setItem("TKL_login_user", "");
+      sessionStorage.setItem("TKL_login_email", "");
     }
   };
 

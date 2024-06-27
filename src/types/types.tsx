@@ -4,20 +4,23 @@ export interface Product {
   id: number;
   productId: string;
   title: string;
-  description?: string; // Optional field
-  square?: string; // Optional field
-  frontWidth?: string; // Optional field
-  backWidth?: string; // Optional field
-  length?: string; // Optional field
+  description?: string;
+  square?: number;
+  frontWidth?: number;
+  backWidth?: number;
+  length?: number;
   price: number;
-  province?: string; // Optional field
-  district?: string; // Optional field
-  ward?: string; // Optional field
-  location?: string; // Optional field
+  province?: string;
+  district?: string;
+  ward?: string;
+  location?: string;
   status: number;
-  createdBy?: string; // Optional field
-  createdAt: string; // Can be string if using ISO date strings
+  createdBy?: string;
+  createdAt: string;
   images: string[];
+  thumbnail: string;
+  executionPrice: number;
+  transactionPrice: number;
 }
 
 export type Profile = {

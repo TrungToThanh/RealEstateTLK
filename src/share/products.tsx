@@ -8,33 +8,22 @@ import {
 import { useEffect, useState } from "react";
 import { ModalContact } from "./modal-contact";
 import { getProducts } from "../api/product";
+import { Product } from "../types/types";
 
 export const ProductComponent = () => {
   const [pageSizeValue, setPageSize] = useState(8);
   const [showList, setShowList] = useState(true); //false: show table
   const [open, setOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>();
 
   useEffect(() => {
-    getProducts();
+    const getProduct = async () => {
+      const listProducts = await getProducts();
+      console.log(listProducts);
+      setProducts(listProducts);
+    };
+    getProduct();
   }, []);
-
-  const fakeArray = Array(100)
-    .fill({
-      id: 1,
-      name: "Đất nền",
-      location: "Chương Mỹ",
-      square: "50m2",
-      price: "2,x tỷ",
-      createBy: "N.V.An",
-    })
-    .map(() => ({
-      id: 1,
-      name: "Đất nền ven sông, đẹp và nhiều tiện ích. Nhà 3 tầng có hàng xóm thân thiện",
-      location: "Chương Mỹ",
-      square: "50m2",
-      price: "2,x tỷ",
-      createBy: "N.V.An",
-    }));
 
   const columns = [
     {
@@ -88,7 +77,7 @@ export const ProductComponent = () => {
     <>
       <Flex className="w-full items-center justify-between my-4">
         <p className="text-md font-bold">
-          Sản phẩm: {pageSizeValue}/{fakeArray?.length || 0}
+          Sản phẩm: {pageSizeValue}/{products?.length || 0}
         </p>
         <Segmented
           options={[
@@ -130,17 +119,20 @@ export const ProductComponent = () => {
             xxl: 4,
           }}
           className="mt-20"
-          dataSource={fakeArray}
-          renderItem={() => (
+          dataSource={products}
+          renderItem={(product: Product) => (
             <List.Item>
               <div className="px-2">
-                <CardProductComponent setOpen={(value) => setOpen(value)} />
+                <CardProductComponent
+                  setOpen={(value) => setOpen(value)}
+                  product={product}
+                />
               </div>
             </List.Item>
           )}
         />
       ) : (
-        <Table columns={columns} dataSource={fakeArray} />
+        <Table columns={columns} dataSource={products} />
       )}
     </>
   );

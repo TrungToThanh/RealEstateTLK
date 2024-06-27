@@ -32,9 +32,8 @@ export const HeaderComponent = () => {
   const location = useLocation();
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
-  console.log(navigator.name);
   const isHideSearchBar = location.pathname?.includes("/admin");
-  const isLogin = sessionStorage.getItem("login") === "true";
+  const isLogin = sessionStorage.getItem("TKL_login") === "true";
 
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1224px)",
@@ -50,7 +49,7 @@ export const HeaderComponent = () => {
           href="https://www.antgroup.com"
         >
           <div>XIN CHÀO!</div>
-          {sessionStorage.getItem("TKL_login_user")}
+          {sessionStorage.getItem("TKL_login_email")}
           <Divider className="m-0" />
         </a>
       ),
@@ -79,7 +78,10 @@ export const HeaderComponent = () => {
       ),
       onClick: async () => {
         await supabase.auth.signOut();
-        sessionStorage.setItem("login", "false");
+        sessionStorage.setItem("TKL_login", "false");
+        sessionStorage.setItem("TKL_login_user", "");
+        sessionStorage.setItem("TKL_login_email", "");
+        sessionStorage.clear();
         message.success("Bạn đã đăng xuất!");
       },
     },
@@ -89,7 +91,7 @@ export const HeaderComponent = () => {
     <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0 max-w-[1200px]">
       <div className="bg-white">
         <Flex className="w-full justify-between items-center" wrap>
-          <Flex>
+          <Flex onClick={() => navigator("/")}>
             <Image src={logoImage} width={100} height={60} preview={false} />
             <p
               className={`${

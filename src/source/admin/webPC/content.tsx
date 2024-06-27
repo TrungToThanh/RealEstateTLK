@@ -24,20 +24,30 @@ export const ContentAdminComponent = () => {
     {
       key: "1",
       icon: <UserAddOutlined />,
-      label: "Tạo nhân sự mới",
+      label: "Tin đã đăng",
     },
     {
       key: "2",
+      icon: <UserSwitchOutlined />,
+      label: "Thông tin tài khoản",
+    },
+    {
+      key: "3",
+      icon: <UserAddOutlined />,
+      label: "Tạo nhân sự mới",
+    },
+    {
+      key: "4",
       icon: <UserSwitchOutlined />,
       label: "Quản trị nhân sự",
     },
   ];
 
   const renderComponent = () => {
-    if (key === "1") {
+    if (key === "3") {
       return <CreateNewUserComponent />;
     }
-    if (key === "2") {
+    if (key === "4") {
       return <EmployeesComponent />;
     }
     return <></>;

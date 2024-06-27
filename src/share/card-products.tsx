@@ -8,13 +8,16 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Button, Card, Row, Space, Watermark } from "antd";
 import Meta from "antd/es/card/Meta";
+import { Product } from "../types/types";
 
 type CardProductComponentProps = {
   setOpen: (value: boolean) => void;
+  product: Product;
 };
 
 export const CardProductComponent = ({
   setOpen,
+  product,
 }: CardProductComponentProps) => {
   return (
     <>
@@ -48,9 +51,8 @@ export const CardProductComponent = ({
             <Watermark content="Tho Kim Land">
               <img
                 alt="example"
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                width={"100%"}
-                className="p-1 rounded"
+                src={product.thumbnail}
+                className="p-1 rounded w-full h-60"
               />
             </Watermark>
             <Space className="w-full flex justify-between px-2" size={4}>
@@ -61,7 +63,7 @@ export const CardProductComponent = ({
                       Thụy Hương
                     </Button>
                     <p>
-                      12 <PictureOutlined />
+                      {product.images.length || 1} <PictureOutlined />
                     </p>
                   </p>
                 </p>
@@ -71,11 +73,11 @@ export const CardProductComponent = ({
         }
         actions={[
           <p>
-            <GatewayOutlined /> <span>50m2</span>
+            <GatewayOutlined /> <span>{product.square}</span>
           </p>,
           <p>
             <DollarOutlined />
-            <span className="text-red-500 font-bold"> 2,x tỷ</span>
+            <span className="text-red-500 font-bold"> {product.price}</span>
           </p>,
           <p>
             <Button
@@ -93,7 +95,7 @@ export const CardProductComponent = ({
           title={
             <Row>
               <span className="text-wrap flex text-md text-start pt-0">
-                Bán Đất Phân Lô Cực Đẹp Ngay Gần Trung Tâm Xã
+                {product.title}
               </span>
             </Row>
           }

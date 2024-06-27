@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   Space,
+  Tooltip,
   message,
 } from "antd";
 import Upload from "antd/es/upload/Upload";
@@ -18,16 +19,21 @@ import { GetDistricts, GetProvinces, GetWards } from "../api/location";
 import { Product } from "../types/types";
 import { createProduct } from "../api/product";
 import { v4 as uuidv4 } from "uuid";
+import type { GetProp, UploadFile, UploadProps } from "antd";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export const CreateItemComponent = ({ open, onClose }: Props) => {
   const [provincesOptions, setProvincesOptions] = useState([]);
   const [districtsOptions, setDistrictsOptions] = useState([]);
   const [wardsOptions, setWardsOptions] = useState([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [base64, setBase64] = useState("");
+
   const [form] = useForm();
 
   useEffect(() => {
@@ -60,19 +66,22 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
       productId: uuidv4(),
       title: values.title,
       description: values.description || "",
-      square: values.square?.toString() || "",
-      frontwidth: values.frontWidth?.toString() || "",
-      backwidth: values.backWidth?.toString() || "",
-      length: values.length?.toString() || "",
+      square: values.square || 0,
+      frontWidth: values.frontWidth || 0,
+      backWidth: values.backWidth || 0,
+      length: values.length || 0,
       price: values.price || 0,
       province: values.province || "",
       district: values.district || "",
       ward: values.ward || "",
       location: values.location || "",
       status: 0,
-      createdBy: values.createdAt || "",
+      createdBy: sessionStorage.getItem("TKL_login_user") || "",
       createdAt: dayjs().toISOString(),
       images: [""],
+      thumbnail: base64,
+      executionPrice: values.executionPrice || 0,
+      transactionPrice: 0,
     };
     const res = await createProduct(valuesSubmit);
     if (res) {
@@ -86,6 +95,47 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
         onClose();
       }, 1000);
     }
+  };
+
+  const beforeUpload = (file: FileType) => {
+    const fileTypeList = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/gif",
+      "image/svg",
+    ];
+    const isPermitExtension = fileTypeList?.includes(
+      file?.type?.toLocaleLowerCase()
+    );
+    if (!isPermitExtension) {
+      message.error("Hãy chọn ảnh có định dang JPG/PNG/GIF,SVG file!");
+    }
+    const isLt2M = file?.size / 1024 / 1024 < 2;
+
+    if (!isLt2M) {
+      message.error("Chỉ được phép tải file < 2MB!");
+    }
+    if (isPermitExtension && isLt2M) {
+      const handleBase64 = async () => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            setBase64(reader.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+      handleBase64();
+    } else {
+      setBase64("");
+    }
+
+    return isPermitExtension && isLt2M;
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
 
   return (
@@ -165,11 +215,96 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
                 placeholder="diện tích"
                 addonAfter="m2"
                 maxLength={5}
-                className="w-full max-w-32"
+                className="w-full"
               />
             </Form.Item>
             <Form.Item
-              label="Giá"
+              label="Chiều dài"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="length"
+            >
+              <InputNumber
+                placeholder="Chiều dài"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full"
+              />
+            </Form.Item>
+          </Space>
+          <Space className="w-full justify-between m-0 p-0 gap-2">
+            <Form.Item
+              label="Mặt trước"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="frontwidth"
+            >
+              <InputNumber
+                placeholder="Mặt trước"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Mặt sau"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="backwidth"
+            >
+              <InputNumber
+                placeholder="Mặt sau"
+                addonAfter="m"
+                maxLength={5}
+                className="w-full"
+              />
+            </Form.Item>
+          </Space>
+          <Space className="w-full justify-between m-0 p-0 gap-2">
+            <Form.Item
+              label="Giá khởi điểm"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng điền đầy đủ thông tin",
+                },
+              ]}
+              hasFeedback
+              validateTrigger={["onChange", "onBlur"]}
+              name="executionPrice"
+            >
+              <InputNumber<number>
+                defaultValue={1000}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) =>
+                  value?.replace(/\$\s?|(,*)/g, "") as unknown as number
+                }
+                className="w-full"
+                addonAfter="VNĐ"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Giá khớp lệnh"
               rules={[
                 {
                   required: true,
@@ -193,65 +328,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               />
             </Form.Item>
           </Space>
-          <Space>
-            <Form.Item
-              label="Mặt trước"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng điền đầy đủ thông tin",
-                },
-              ]}
-              hasFeedback
-              validateTrigger={["onChange", "onBlur"]}
-              name="frontwidth"
-            >
-              <InputNumber
-                placeholder="Mặt trước"
-                addonAfter="m"
-                maxLength={5}
-                className="w-full max-w-32"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Mặt sau"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng điền đầy đủ thông tin",
-                },
-              ]}
-              hasFeedback
-              validateTrigger={["onChange", "onBlur"]}
-              name="backwidth"
-            >
-              <InputNumber
-                placeholder="Mặt sau"
-                addonAfter="m"
-                maxLength={5}
-                className="w-full max-w-32"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Chiều dài"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng điền đầy đủ thông tin",
-                },
-              ]}
-              hasFeedback
-              validateTrigger={["onChange", "onBlur"]}
-              name="length"
-            >
-              <InputNumber
-                placeholder="Chiều dài"
-                addonAfter="m"
-                maxLength={5}
-                className="w-full max-w-32"
-              />
-            </Form.Item>
-          </Space>
+
           <Divider orientation="left">Vị trí:</Divider>
 
           <Form.Item
@@ -326,19 +403,20 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
           </Form.Item>
 
           <Divider orientation="left">Hình ảnh:</Divider>
-          <Form.Item
-            label="Ảnh (Tối đa 5 ảnh):"
-            valuePropName="fileList"
-            // rules={[{ required: true }]}
-            name="images"
+
+          <Upload
+            listType="picture-card"
+            maxCount={5}
+            onPreview={() => true}
+            fileList={fileList}
+            onChange={handleChange}
+            beforeUpload={beforeUpload}
           >
-            <Upload listType="picture-card" maxCount={5} onPreview={() => true}>
-              <Button style={{ border: 0, background: "none" }}>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Tải ảnh</div>
-              </Button>
-            </Upload>
-          </Form.Item>
+            <Tooltip title="Đăng tối đa 5 ảnh, mỗi ảnh không quá 2Mb" showArrow>
+              <PlusOutlined /> Tải ảnh
+            </Tooltip>
+          </Upload>
+
           <Form.Item>
             <Space className="w-full justify-center">
               <Button
@@ -346,6 +424,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
                 htmlType="submit"
                 ghost
                 icon={<PlusCircleOutlined />}
+                disabled={!fileList?.length}
               >
                 Tạo tin mới
               </Button>
