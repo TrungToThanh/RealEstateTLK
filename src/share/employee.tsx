@@ -1,8 +1,13 @@
-import { Button, Space, Table } from "antd";
+import { Button, Row, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import adminAuthClient from "../utils/supabaseAdmin";
 import { Profile } from "../types/types";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import { CreateNewUserComponent } from "./create-user";
 
 const columns = [
   {
@@ -49,6 +54,7 @@ const columns = [
 
 export const EmployeesComponent = () => {
   const [employees, setEmployees] = useState<Profile[]>([]);
+  const [isShowCreateUser, setShow] = useState(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -70,10 +76,29 @@ export const EmployeesComponent = () => {
   }, []);
 
   return (
-    <Table
-      dataSource={employees}
-      columns={columns}
-      className="w-full overflow-auto"
-    />
+    <>
+      <Row className="justify-start mb-8">
+        <Button
+          icon={<UserAddOutlined />}
+          type="primary"
+          onClick={() => setShow(true)}
+        >
+          Thêm nhân sự mới
+        </Button>
+      </Row>
+      <Table
+        showHeader={true}
+        rowHoverable
+        dataSource={employees}
+        columns={columns}
+        className="w-full overflow-auto"
+      />
+      {isShowCreateUser && (
+        <CreateNewUserComponent
+          open={isShowCreateUser}
+          onClose={() => setShow(false)}
+        />
+      )}
+    </>
   );
 };

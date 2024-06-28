@@ -149,7 +149,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
       >
         <Form
           form={form}
-          name="control-hooks"
+          name="createItem"
           onFinish={onFinish}
           layout="vertical"
           scrollToFirstError

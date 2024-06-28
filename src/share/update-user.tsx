@@ -45,6 +45,9 @@ export const UpdateUserComponent = () => {
       form={form}
       onFinish={onFinish}
     >
+      <Form.Item label="Mã nhân viên" name="id">
+        <Input readOnly />
+      </Form.Item>
       <Form.Item
         label="Họ và tên"
         name="name"

@@ -9,19 +9,24 @@ import {
 import { Avatar, Button, Card, Row, Space, Watermark } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Product } from "../types/types";
+import { useState } from "react";
+import { ProductsDetail } from "./product-details";
 
 type CardProductComponentProps = {
-  setOpen: (value: boolean) => void;
+  setOpenModalContact: (value: boolean) => void;
   product: Product;
 };
 
 export const CardProductComponent = ({
-  setOpen,
+  setOpenModalContact,
   product,
 }: CardProductComponentProps) => {
+  const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
   return (
     <>
       <Card
+        key={product.id}
+        onClick={() => setOpenModalProductDetail(true)}
         hoverable
         className="w-full"
         cover={
@@ -43,7 +48,7 @@ export const CardProductComponent = ({
                 <Space>
                   <Button
                     icon={<PhoneOutlined />}
-                    onClick={() => setOpen(true)}
+                    onClick={() => setOpenModalContact(true)}
                   />
                 </Space>
               </Space>
@@ -101,6 +106,13 @@ export const CardProductComponent = ({
           }
         />
       </Card>
+      {openModalProductDetail && (
+        <ProductsDetail
+          product={product}
+          open={openModalProductDetail}
+          onClose={() => setOpenModalProductDetail(false)}
+        />
+      )}
     </>
   );
 };

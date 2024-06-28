@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import { ContentAdminComponent } from "./webPC/content";
+import { ContentAdminComponent } from "./content";
 import { HeaderComponent } from "../landing-page/header";
 
 export const AdminPage = () => {

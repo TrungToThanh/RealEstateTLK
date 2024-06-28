@@ -25,6 +25,7 @@ import { SearchComponent } from "../../share/search";
 import { CreateItemComponent } from "../../share/create-item";
 import supabase from "../../utils/supabaseClient";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SearchMobileComponent } from "../../share/search-mobile";
 
 const { Search } = Input;
 export const HeaderComponent = () => {
@@ -32,6 +33,8 @@ export const HeaderComponent = () => {
   const location = useLocation();
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
+  const [showSearchMobile, setShowSearchMobile] = useState(false);
+
   const isHideSearchBar = location.pathname?.includes("/admin");
   const isLogin = sessionStorage.getItem("TKL_login") === "true";
 
@@ -92,14 +95,27 @@ export const HeaderComponent = () => {
       <div className="bg-white">
         <Flex className="w-full justify-between items-center" wrap>
           <Flex onClick={() => navigator("/")}>
-            <Image src={logoImage} width={100} height={60} preview={false} />
-            <p
-              className={`${
-                isDesktopOrLaptop ? "text-[28px]" : "text-[18px]"
-              } font-semibold text-blue-700`}
-            >
-              THỔ KIM <span className="text-yellow-500"> LAND </span>
-            </p>
+            <Image
+              src={logoImage}
+              width={100}
+              height={74}
+              sizes="large"
+              preview={false}
+            />
+            <div>
+              <div
+                className={`${
+                  isDesktopOrLaptop ? "text-[28px]" : "text-[18px]"
+                } font-semibold text-blue-700 m-0 p-0 h-8 text-start`}
+              >
+                THỔ KIM <span className="text-yellow-500"> LAND </span>
+              </div>
+              {isDesktopOrLaptop && (
+                <div className="h-4 font-semibold">
+                  Phố Gốt, Xã Đông Sơn, Huyện Chương Mỹ, Hà Nội
+                </div>
+              )}
+            </div>
           </Flex>
           <Flex className="px-2" gap={8}>
             <Button
@@ -145,6 +161,7 @@ export const HeaderComponent = () => {
                 allowClear
                 className="w-full m-0 p-0"
                 style={{ width: "100%" }}
+                onClick={() => setShowSearchMobile(true)}
               />
             )}
           </Flex>
@@ -161,6 +178,12 @@ export const HeaderComponent = () => {
           />
         </>
       )}
+      {
+        <SearchMobileComponent
+          open={showSearchMobile}
+          onClose={() => setShowSearchMobile(false)}
+        />
+      }
     </Header>
   );
 };

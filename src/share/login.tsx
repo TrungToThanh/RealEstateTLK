@@ -3,7 +3,7 @@ import {
   PlusCircleOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Row, Space, message } from "antd";
+import { Button, Form, Input, Modal, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import supabase from "../utils/supabaseClient";
@@ -47,7 +47,7 @@ export const LoginComponent = ({ open, onClose }: Props) => {
         className="max-w-[350px]"
       >
         <Form
-          name="normal_login"
+          name="login"
           initialValues={{ remember: true }}
           layout="vertical"
           className="mt-4"
@@ -55,14 +55,14 @@ export const LoginComponent = ({ open, onClose }: Props) => {
           onFinish={onFinish}
         >
           <Form.Item
-            label="Email:"
+            label="Email"
             name="email"
             rules={[{ required: true, message: "Hãy nhập email của bạn" }]}
           >
             <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
           <Form.Item
-            label="Mật khẩu:"
+            label="Mật khẩu"
             name="password"
             rules={[{ required: true, message: "Hãy nhập mật khẩu" }]}
             className="-mt-2"
@@ -88,7 +88,6 @@ export const LoginComponent = ({ open, onClose }: Props) => {
               </Button>
             </Space>
           </Form.Item>
-          <Row className="w-full mt-4 justify-end"></Row>
         </Form>
       </Modal>
     </>

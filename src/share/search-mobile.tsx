@@ -1,10 +1,15 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Space } from "antd";
+import { Button, Form, Input, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { GetDistricts, GetProvinces, GetWards } from "../api/location";
 
-export const SearchComponent = () => {
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
+
+export const SearchMobileComponent = ({ open, onClose }: Props) => {
   const [provincesOption, setProvincesOptions] = useState([]);
   const [districtsOption, setDistrictsOptions] = useState([]);
   const [wardsOption, setWardsOptions] = useState([]);
@@ -38,28 +43,33 @@ export const SearchComponent = () => {
   };
 
   return (
-    <Form
-      name="search"
-      layout="vertical"
-      labelAlign="left"
-      autoComplete="off"
-      className="w-full justify-between mx-auto p-2 border rounded-md bg-white"
-      form={form}
-      initialValues={{
-        provinces: "Hà Nội",
-        districts: "Chương Mỹ",
-        wards: "Đông Sơn",
-        squareFrom: "0",
-        squareTo: "100",
-        priceFrom: "0",
-        priceTo: "1000000000",
-      }}
+    <Modal
+      open={open}
+      footer={<></>}
+      onCancel={onClose}
+      title="Tìm kiếm chi tiết"
     >
-      <Space.Compact size="large">
+      <Form
+        name="searchMobile"
+        layout="vertical"
+        labelAlign="left"
+        autoComplete="off"
+        className="w-full justify-between mx-auto p-2 border rounded-md bg-white"
+        form={form}
+        initialValues={{
+          provinces: "Hà Nội",
+          districts: "Chương Mỹ",
+          wards: "Đông Sơn",
+          squareFrom: "0",
+          squareTo: "100",
+          priceFrom: "0",
+          priceTo: "1000000000",
+        }}
+      >
         <Form.Item className="font-bold" label="Tỉnh/TP:" name="provinces">
           <Select
+            className="w-full"
             defaultValue="Hà Nội"
-            style={{ width: 180 }}
             options={provincesOption}
             onChange={(Id) => handleGetDistricts(Id)}
           />
@@ -67,17 +77,16 @@ export const SearchComponent = () => {
 
         <Form.Item className="font-bold" label="Huyện:" name="districts">
           <Select
-            style={{ width: 180 }}
+            className="w-full"
             options={districtsOption}
             onChange={(Id) => handleGetWards(Id)}
           />
         </Form.Item>
         <Form.Item className="font-bold" label="Xã:" name="wards">
-          <Select style={{ width: 180 }} options={wardsOption} />
+          <Select options={wardsOption} />
         </Form.Item>
         <Form.Item className="font-bold" label="Diện tích:">
           <Select
-            style={{ width: 180 }}
             options={[]}
             value={valueSquareSearch}
             popupClassName="!w-[350px]"
@@ -125,9 +134,8 @@ export const SearchComponent = () => {
 
         <Form.Item className="font-bold" label="Mức giá:">
           <Select
-            style={{ width: 180 }}
-            value={valuePriceSearch}
             options={[]}
+            value={valuePriceSearch}
             popupClassName="!w-[350px]"
             className="w-[350px]"
             dropdownRender={() => (
@@ -174,12 +182,12 @@ export const SearchComponent = () => {
             )}
           />
         </Form.Item>
-        <Form.Item label=" " name=" ">
+        <Form.Item className="w-full justify-end flex">
           <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
             Tìm Kiếm
           </Button>
         </Form.Item>
-      </Space.Compact>
-    </Form>
+      </Form>
+    </Modal>
   );
 };

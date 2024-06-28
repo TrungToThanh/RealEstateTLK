@@ -6,8 +6,8 @@ import {
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { CreateNewUserComponent } from "../../../share/create-user";
-import { EmployeesComponent } from "../../../share/employee";
+import { UpdateUserComponent } from "../../share/update-user";
+import { EmployeesComponent } from "../../share/employee";
 
 export const ContentAdminComponent = () => {
   const [open, setOpen] = useState(false);
@@ -33,21 +33,16 @@ export const ContentAdminComponent = () => {
     },
     {
       key: "3",
-      icon: <UserAddOutlined />,
-      label: "Tạo nhân sự mới",
-    },
-    {
-      key: "4",
       icon: <UserSwitchOutlined />,
       label: "Quản trị nhân sự",
     },
   ];
 
   const renderComponent = () => {
-    if (key === "3") {
-      return <CreateNewUserComponent />;
+    if (key == "2") {
+      return <UpdateUserComponent />;
     }
-    if (key === "4") {
+    if (key === "3") {
       return <EmployeesComponent />;
     }
     return <></>;
@@ -67,14 +62,16 @@ export const ContentAdminComponent = () => {
           </div>
         </Flex>
         <Drawer
-          title="Công cụ"
+          title="Quản trị"
           placement="left"
-          closable={false}
+          closable={true}
           onClose={onClose}
           open={open}
           getContainer={false}
-          className="!w-[230px] !m-0 !p-0"
-          styles={{ body: { padding: 0, margin: 0 } }}
+          className="!w-fit"
+          styles={{
+            body: { padding: 0, margin: 0, height: 800 },
+          }}
         >
           <Menu
             mode="inline"

@@ -16,6 +16,7 @@
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "react": "^18.2.0",
+    "react-awesome-shapes": "^0.1.12",
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-responsive": "^10.0.0",

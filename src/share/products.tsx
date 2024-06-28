@@ -3,32 +3,41 @@ import { CardProductComponent } from "./card-products";
 import {
   AppstoreOutlined,
   BarsOutlined,
+  NotificationOutlined,
   PhoneOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { ModalContact } from "./modal-contact";
-import { getProducts } from "../api/product";
 import { Product } from "../types/types";
+import { ProductsContext } from "../components/product-provider";
+import dayjs from "dayjs";
+import { useGetSizeDevices } from "../hooks/use-get-size-devices";
+import { ProductsDetail } from "./product-details";
 
 export const ProductComponent = () => {
-  const [pageSizeValue, setPageSize] = useState(8);
-  const [showList, setShowList] = useState(true); //false: show table
-  const [open, setOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>();
+  const { isIpad, isNormalPhone, isLaptop } = useGetSizeDevices();
 
-  useEffect(() => {
-    const getProduct = async () => {
-      const listProducts = await getProducts();
-      console.log(listProducts);
-      setProducts(listProducts);
-    };
-    getProduct();
-  }, []);
+  const [pageSizeValue, setPageSize] = useState(8);
+  const [showAll, setShowProduct] = useState(false); //true: show all, false: show new
+  const [showList, setShowList] = useState(true); //false: show table
+  const [openModalContact, setOpenModalContact] = useState(false);
+  const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
+
+  const { products } = useContext(ProductsContext);
+
+  const newProducts = useMemo(() => {
+    return (
+      products?.filter(
+        (product) => dayjs().diff(dayjs(product.createdAt), "date") < 2
+      ) || []
+    );
+  }, [products]);
 
   const columns = [
     {
       title: "Mô tả",
-      dataIndex: "name",
+      dataIndex: "title",
     },
     {
       title: "Khu vực",
@@ -45,7 +54,8 @@ export const ProductComponent = () => {
     {
       title: "Mô giới",
       dataIndex: "createBy",
-      render: () => (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_: any, product: Product) => (
         <Space className="w-fit px-1 justify-between">
           <p className="flex items-center my-auto">
             <Avatar
@@ -55,12 +65,17 @@ export const ProductComponent = () => {
               className="border-1 bg-slate-500"
             />
             <div className="px-2">
-              <p className="text-xs"> N.V.Linh</p>
+              <p className="text-xs">{product.createdBy}</p>
             </div>
-            <p className="text-xs"> 12/06/2024 10h40</p>
+            <p className="text-xs">
+              {dayjs(product.createdAt).format("DD/MM/YYYY")}
+            </p>
           </p>
           <Space>
-            <Button icon={<PhoneOutlined />} onClick={() => setOpen(true)} />
+            <Button
+              icon={<PhoneOutlined />}
+              onClick={() => setOpenModalContact(true)}
+            />
           </Space>
         </Space>
       ),
@@ -69,35 +84,71 @@ export const ProductComponent = () => {
       title: "Xem",
       dataIndex: "",
       key: "x",
-      render: () => <a>Chi tiết</a>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_: any, product: Product) => (
+        <>
+          <Button onClick={() => setOpenModalProductDetail(true)}>
+            Chi tiết
+          </Button>
+          <ProductsDetail
+            product={product}
+            open={openModalProductDetail}
+            onClose={() => setOpenModalProductDetail(false)}
+          />
+        </>
+      ),
     },
   ];
 
   return (
     <>
-      <Flex className="w-full items-center justify-between my-4">
-        <p className="text-md font-bold">
-          Sản phẩm: {pageSizeValue}/{products?.length || 0}
-        </p>
+      <Flex
+        className={`w-full items-center justify-between my-4  ${
+          isLaptop ? "mt-52" : isNormalPhone ? "mt-32" : "mt-40"
+        }`}
+        wrap
+      >
         <Segmented
           options={[
             {
-              label: "Dạng lưới",
-              value: "List",
-              icon: <AppstoreOutlined />,
+              label: "Tin mới",
+              value: "new",
+              icon: <NotificationOutlined />,
             },
             {
-              label: "Danh sách",
-              value: "Kana",
-              icon: <BarsOutlined />,
+              label: "Tất cả",
+              value: "all",
+              icon: <ProfileOutlined />,
             },
           ]}
           onChange={(value) => {
-            setShowList(value === "List");
+            setShowProduct(value === "all");
           }}
         />
+        <p className="text-md font-bold px-2">
+          Hiện có: {showAll ? products?.length || 0 : newProducts?.length || 0}{" "}
+          tin
+        </p>
+        {isIpad && (
+          <Segmented
+            options={[
+              {
+                label: "Dạng lưới",
+                value: "List",
+                icon: <AppstoreOutlined />,
+              },
+              {
+                label: "Danh sách",
+                value: "Kana",
+                icon: <BarsOutlined />,
+              },
+            ]}
+            onChange={(value) => {
+              setShowList(value === "List");
+            }}
+          />
+        )}
       </Flex>
-      <ModalContact open={open} onClose={() => setOpen(false)} />
       {showList ? (
         <List
           pagination={{
@@ -118,13 +169,12 @@ export const ProductComponent = () => {
             xl: 3,
             xxl: 4,
           }}
-          className="mt-20"
-          dataSource={products}
+          dataSource={showAll ? products : newProducts}
           renderItem={(product: Product) => (
             <List.Item>
               <div className="px-2">
                 <CardProductComponent
-                  setOpen={(value) => setOpen(value)}
+                  setOpenModalContact={(value) => setOpenModalContact(value)}
                   product={product}
                 />
               </div>
@@ -132,8 +182,15 @@ export const ProductComponent = () => {
           )}
         />
       ) : (
-        <Table columns={columns} dataSource={products} />
+        <Table
+          columns={columns}
+          dataSource={showAll ? products : newProducts}
+        />
       )}
+      <ModalContact
+        open={openModalContact}
+        onClose={() => setOpenModalContact(false)}
+      />
     </>
   );
 };
