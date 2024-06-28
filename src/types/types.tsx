@@ -30,3 +30,8 @@ export type Profile = {
   password?: string;
   numberPhone: number;
 };
+
+export type Address = {
+  label: string;
+  value: string;
+};

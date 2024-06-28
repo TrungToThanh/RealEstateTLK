@@ -1,16 +1,16 @@
 import {
-  DollarOutlined,
   EnvironmentOutlined,
   GatewayOutlined,
   PhoneOutlined,
   PictureOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Card, Row, Space, Watermark } from "antd";
+import { Avatar, Button, Card, InputNumber, Row, Space, Watermark } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Product } from "../types/types";
 import { useState } from "react";
 import { ProductsDetail } from "./product-details";
+import { wardsList } from "../const/wards";
 
 type CardProductComponentProps = {
   setOpenModalContact: (value: boolean) => void;
@@ -22,11 +22,13 @@ export const CardProductComponent = ({
   product,
 }: CardProductComponentProps) => {
   const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
+
+  const wardName =
+    wardsList?.find((item) => item.wardId === product.ward)?.ward || "";
   return (
     <>
       <Card
         key={product.id}
-        onClick={() => setOpenModalProductDetail(true)}
         hoverable
         className="w-full"
         cover={
@@ -58,6 +60,7 @@ export const CardProductComponent = ({
                 alt="example"
                 src={product.thumbnail}
                 className="p-1 rounded w-full h-60"
+                onClick={() => setOpenModalProductDetail(true)}
               />
             </Watermark>
             <Space className="w-full flex justify-between px-2" size={4}>
@@ -65,7 +68,7 @@ export const CardProductComponent = ({
                 <p className="block">
                   <p className="w-full flex text-start justify-between absolute mt-[116px] -mx-1 z-10">
                     <Button icon={<EnvironmentOutlined />} size="small">
-                      Thụy Hương
+                      {wardName}
                     </Button>
                     <p>
                       {product.images.length || 1} <PictureOutlined />
@@ -81,8 +84,50 @@ export const CardProductComponent = ({
             <GatewayOutlined /> <span>{product.square}</span>
           </p>,
           <p>
-            <DollarOutlined />
-            <span className="text-red-500 font-bold"> {product.price}</span>
+            <span className="text-red-500 font-bold">
+              <InputNumber
+                className="text-red-700 w-fit border-0"
+                value={product.price}
+                formatter={(value) => {
+                  if (!value) return "";
+
+                  // Remove non-numeric characters
+                  const numericValue = value.toString()?.replace(/[^0-9]/g, "");
+
+                  const isLogin =
+                    sessionStorage.getItem("TKL_login") === "true";
+
+                  if (isLogin) {
+                    return `${numericValue}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ","
+                    );
+                  }
+
+                  const displayValue =
+                    numericValue.length > 9
+                      ? Math.floor(Number(numericValue) / 1000000000)
+                      : numericValue.length > 6
+                      ? Math.floor(Number(numericValue) / 1000000)
+                      : numericValue;
+
+                  return (
+                    `${displayValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                    `${
+                      numericValue.length > 9
+                        ? ",xxx tỷ"
+                        : numericValue.length > 6
+                        ? ",xxx triệu"
+                        : " đồng"
+                    }`
+                  );
+                }}
+                parser={(value) =>
+                  value?.replace(/\$\s?|(,*)/g, "") as unknown as number
+                }
+                readOnly
+              />
+            </span>
           </p>,
           <p>
             <Button
@@ -98,7 +143,7 @@ export const CardProductComponent = ({
       >
         <Meta
           title={
-            <Row>
+            <Row onClick={() => setOpenModalProductDetail(true)}>
               <span className="text-wrap flex text-md text-start pt-0">
                 {product.title}
               </span>

@@ -20,6 +20,9 @@ import { Product } from "../types/types";
 import { createProduct } from "../api/product";
 import { v4 as uuidv4 } from "uuid";
 import type { GetProp, UploadFile, UploadProps } from "antd";
+import axios from "axios";
+import { RcFile } from "antd/es/upload";
+import { apiUrl } from "../const/const";
 
 type Props = {
   open: boolean;
@@ -60,10 +63,45 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
     setWardsOptions(wards);
   };
 
+  const handleUploadFiles = async (productId: string) => {
+    if (fileList.length === 0) {
+      return "";
+    }
+
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append("files", file.originFileObj as RcFile, file.name);
+    });
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/Products/upload?id=${productId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data.filePaths.join(", ");
+    } catch (error) {
+      return "";
+    }
+  };
+
   const onFinish = async (values: Product) => {
+    const productId = uuidv4();
+    const imagesList = await handleUploadFiles(productId);
+    if (!imagesList || !imagesList.length) {
+      message.error("Thất bại!");
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
     const valuesSubmit = {
       id: 0,
-      productId: uuidv4(),
+      productId: productId,
       title: values.title,
       description: values.description || "",
       square: values.square || 0,
@@ -78,7 +116,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
       status: 0,
       createdBy: sessionStorage.getItem("TKL_login_user") || "",
       createdAt: dayjs().toISOString(),
-      images: [""],
+      images: [imagesList],
       thumbnail: base64,
       executionPrice: values.executionPrice || 0,
       transactionPrice: 0,

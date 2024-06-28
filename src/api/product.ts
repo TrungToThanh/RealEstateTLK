@@ -14,7 +14,12 @@ export const getProducts = async (): Promise<Product[]> => {
     return response.data;
 };
 
-export const getProductDetail = async (id: number): Promise<Product> => {
+export const getImages = async (id: string): Promise<string[]> => {
+    const response = await apiClient.get<string[]>(`/list-files/${id}`);
+    return response.data;
+};
+
+export const getProductDetail = async (id: string): Promise<Product> => {
     const response = await apiClient.get<Product>(`/get-product/${id}`);
     return response.data;
 };

@@ -27,11 +27,12 @@ export const ProductComponent = () => {
   const { products } = useContext(ProductsContext);
 
   const newProducts = useMemo(() => {
-    return (
-      products?.filter(
-        (product) => dayjs().diff(dayjs(product.createdAt), "date") < 2
-      ) || []
-    );
+    const list =
+      products?.filter((product) => {
+        console.log(dayjs().diff(dayjs(product.createdAt), "days"));
+        return dayjs().diff(dayjs(product.createdAt), "days") < 1;
+      }) || [];
+    return list;
   }, [products]);
 
   const columns = [

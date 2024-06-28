@@ -1,4 +1,13 @@
-import { Card, Divider, Flex, Form, Input, Modal } from "antd";
+import {
+  Card,
+  Divider,
+  Flex,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Modal,
+} from "antd";
 import { Product } from "../types/types";
 import { useMediaQuery } from "react-responsive";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,7 +20,10 @@ import "swiper/css/thumbs";
 
 // import required modules
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getImages } from "../api/product";
+import { apiUrl } from "../const/const";
+import { wardsList } from "../const/wards";
 
 type Props = {
   product: Product;
@@ -22,7 +34,27 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 480px)",
   });
-  const [thumbsSwiper, setThumbsSwiper] = useState();
+  const [thumbsSwiper, setThumbsSwiper] = useState(product.thumbnail);
+  const [imagePaths, setImagePaths] = useState<string[]>([]);
+
+  useEffect(() => {
+    const getDetail = async () => {
+      const listImages = await getImages(product.productId);
+      setImagePaths(listImages);
+    };
+    getDetail();
+  }, [product]);
+
+  const wardName =
+    wardsList?.find((item) => item.wardId === product.ward)?.ward || "";
+
+  const provinceName =
+    wardsList?.find((item) => item.provinceId === product.province)?.province ||
+    "";
+
+  const districtName =
+    wardsList?.find((item) => item.districtId === product.district)?.district ||
+    "";
 
   return (
     <>
@@ -36,11 +68,11 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
         <Flex wrap>
           <Card
             title={`Thông tin sản phẩm: ${product.title}`}
-            className={isDesktopOrLaptop ? "!w-[800px]" : "!w-[300px]"}
+            className={isDesktopOrLaptop ? "!w-[800px]" : "!w-full"}
           >
-            <img
+            <Image
               src={thumbsSwiper}
-              width={isDesktopOrLaptop ? 750 : 300}
+              width={isDesktopOrLaptop ? 600 : "100%"}
               height={isDesktopOrLaptop ? 400 : 300}
             />
             <Swiper
@@ -52,23 +84,43 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
               modules={[FreeMode, Navigation, Thumbs]}
               className="mt-4 w-full"
             >
-              {product.images.map((image) => {
+              {imagePaths?.map((fileName, index) => {
+                const srcImage = `${apiUrl}/api/Products/image/${
+                  product.productId
+                }/${encodeURIComponent(fileName)}`;
                 return (
-                  <SwiperSlide onClick={() => setThumbsSwiper(image)}>
-                    <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
+                  <SwiperSlide onClick={() => setThumbsSwiper(srcImage)}>
+                    <img key={index} src={srcImage} />
                   </SwiperSlide>
                 );
               })}
             </Swiper>
           </Card>
           <Card
-            title={<p className="text-red-700">Giá bán: {product.price} VNĐ</p>}
+            title={
+              <p>
+                Giá bán:
+                <InputNumber
+                  className="text-red-700 w-fit border-0"
+                  value={product.price}
+                  formatter={(value) =>
+                    `${value} VNĐ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) =>
+                    value?.replace(/\$\s?|(,*)/g, "") as unknown as number
+                  }
+                  readOnly
+                />
+              </p>
+            }
             className="w-[350px]"
           >
             <Form
               initialValues={{
                 description: product.description,
-                location: `${product.province}/${product.district}/${product.ward}`,
+                province: provinceName,
+                district: districtName,
+                ward: wardName,
                 users: product.createdBy || "12122",
                 googleMap: product.location || "",
                 square: product.square || 0,
@@ -80,25 +132,36 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
               <Form.Item label="Mô tả" name="description">
                 <Input.TextArea bordered={false} readOnly />
               </Form.Item>
-              <Form.Item label="Vị trí" name="location">
+              <Form.Item label="Vị trí" noStyle></Form.Item>
+              <Form.Item label="Tỉnh/TP" name="province">
+                <Input bordered={false} readOnly />
+              </Form.Item>
+              <Form.Item label="Huyện/Quận" name="district">
+                <Input bordered={false} readOnly />
+              </Form.Item>
+              <Form.Item label="Xã/Phường" name="ward">
                 <Input bordered={false} readOnly />
               </Form.Item>
               <Form.Item label="Bản đồ" name="googleMap">
                 <Input bordered={false} readOnly />
               </Form.Item>
               <Divider />
-              <Form.Item label="Chiều dài" name="length">
-                <Input bordered={false} readOnly />
-              </Form.Item>
-              <Form.Item label="Mặt sau" name="backWidth">
-                <Input bordered={false} readOnly />
-              </Form.Item>
-              <Form.Item label="Diện tích" name="square">
-                <Input bordered={false} readOnly />
-              </Form.Item>
-              <Form.Item label="Mặt tiền" name="frontWidth">
-                <Input bordered={false} readOnly />
-              </Form.Item>
+              <Flex>
+                <Form.Item label="Diện tích (m2)" name="square">
+                  <Input bordered={false} readOnly />
+                </Form.Item>
+                <Form.Item label="Chiều dài (m)" name="length">
+                  <Input bordered={false} readOnly />
+                </Form.Item>
+              </Flex>
+              <Flex>
+                <Form.Item label="Mặt tiền (m)" name="frontWidth">
+                  <Input bordered={false} readOnly />
+                </Form.Item>
+                <Form.Item label="Mặt sau (m)" name="backWidth">
+                  <Input bordered={false} readOnly />
+                </Form.Item>
+              </Flex>
               <Divider />
               <Form.Item label="Mô giới" name="users">
                 <Input bordered={false} readOnly />

@@ -1,39 +1,63 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select, Space } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { GetDistricts, GetProvinces, GetWards } from "../api/location";
+import { useContext } from "react";
+import { ProductsContext } from "../components/product-provider";
+import { wardsList } from "../const/wards";
+import { Address } from "../types/types";
 
 export const SearchComponent = () => {
-  const [provincesOption, setProvincesOptions] = useState([]);
-  const [districtsOption, setDistrictsOptions] = useState([]);
-  const [wardsOption, setWardsOptions] = useState([]);
+  const { provinces: provincesOption } = useContext(ProductsContext);
+
+  const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
+  const [wardsOption, setWardsOptions] = useState<Address[]>([]);
   const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 100 m2");
   const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1 tỷ");
 
   const [form] = useForm();
 
-  useEffect(() => {
-    const getInfo = async () => {
-      const provinces = await GetProvinces();
-      setProvincesOptions(provinces);
-      setDistrictsOptions([]);
-      setWardsOptions([]);
-    };
-    getInfo();
-  }, []);
-
-  const handleGetDistricts = async (Id: string) => {
+  const handleGetDistricts = async (provinceId: string) => {
     form.setFieldsValue({ districts: "" });
     form.setFieldsValue({ wards: "" });
 
-    const districts = await GetDistricts(Id);
+    const districtsSet = new Set();
+    const districts: Address[] = [];
+
+    wardsList
+      .filter((item) => item.provinceId === provinceId)
+      .forEach((item) => {
+        const key = `${item.district}_${item.districtId}`;
+        if (!districtsSet.has(key)) {
+          districtsSet.add(key);
+          districts.push({
+            label: item.district,
+            value: item.districtId,
+          });
+        }
+      });
+
     setDistrictsOptions(districts);
     setWardsOptions([]);
   };
 
-  const handleGetWards = async (Id: string) => {
-    const wards = await GetWards(Id);
+  const handleGetWards = async (districtId: string) => {
+    const wardsSet = new Set();
+    const wards: Address[] = [];
+
+    wardsList
+      .filter((item) => item.districtId === districtId)
+      .forEach((item) => {
+        const key = `${item.ward}_${item.wardId}`;
+        if (!wardsSet.has(key)) {
+          wardsSet.add(key);
+          wards.push({
+            label: item.ward || "",
+            value: item.wardId || "",
+          });
+        }
+      });
+
     setWardsOptions(wards);
   };
 
