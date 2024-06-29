@@ -23,7 +23,6 @@ import { LoginComponent } from "../../share/login";
 import { useMediaQuery } from "react-responsive";
 import { SearchComponent } from "../../share/search";
 import { CreateItemComponent } from "../../share/create-item";
-import supabase from "../../utils/supabaseClient";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchMobileComponent } from "../../share/search-mobile";
 
@@ -36,10 +35,9 @@ export const HeaderComponent = () => {
   const [showSearchMobile, setShowSearchMobile] = useState(false);
 
   const isHideSearchBar = location.pathname?.includes("/admin");
-  const isLogin = sessionStorage.getItem("TKL_login") === "true";
 
   const isDesktopOrLaptop = useMediaQuery({
-    query: "(min-width: 1224px)",
+    query: "(min-width: 1190px)",
   });
 
   const items = [
@@ -52,7 +50,7 @@ export const HeaderComponent = () => {
           href="https://www.antgroup.com"
         >
           <div>XIN CHÀO!</div>
-          {sessionStorage.getItem("TKL_login_email")}
+          {localStorage.getItem("TKL_login_email")}
           <Divider className="m-0" />
         </a>
       ),
@@ -66,7 +64,7 @@ export const HeaderComponent = () => {
         </div>
       ),
       onClick: async () => {
-        if (isLogin) {
+        if (localStorage.getItem("TKL_token")) {
           navigator("/admin");
         }
       },
@@ -80,12 +78,9 @@ export const HeaderComponent = () => {
         </>
       ),
       onClick: async () => {
-        await supabase.auth.signOut();
-        sessionStorage.setItem("TKL_login", "false");
-        sessionStorage.setItem("TKL_login_user", "");
-        sessionStorage.setItem("TKL_login_email", "");
-        sessionStorage.clear();
+        localStorage.removeItem("TKL_token");
         message.success("Bạn đã đăng xuất!");
+        navigator("/");
       },
     },
   ];
@@ -124,7 +119,7 @@ export const HeaderComponent = () => {
               icon={<FormOutlined />}
               iconPosition="end"
               onClick={() => {
-                if (!isLogin) {
+                if (!localStorage.getItem("TKL_token")) {
                   message.error("Bạn chưa đăng nhập!");
                 } else {
                   setShowCreateItem(true);
@@ -133,7 +128,7 @@ export const HeaderComponent = () => {
             >
               Tạo tin
             </Button>
-            {isLogin ? (
+            {localStorage.getItem("TKL_token") ? (
               <Dropdown menu={{ items }} className="mt-1">
                 <Avatar
                   style={{ backgroundColor: "#87d068" }}

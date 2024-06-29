@@ -3,9 +3,19 @@ import {
   PlusCircleOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Modal } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  message,
+} from "antd";
 import { useForm } from "antd/es/form/Form";
-import supabase from "../utils/supabaseClient";
+import { Employee } from "../types/types";
+import { createEmployee } from "../api/employee";
 
 type Props = {
   open: boolean;
@@ -15,24 +25,20 @@ type Props = {
 export const CreateNewUserComponent = ({ open, onClose }: Props) => {
   const [form] = useForm();
 
-  const onFinish = async (value: {
-    email: string;
-    name: string;
-    password: string;
-    numberPhone: number;
-  }) => {
-    const { data, error } = await supabase.auth.signUp({
-      email: value.email,
-      password: value.password,
-      options: {
-        data: {
-          name: value.name,
-          phone: value.numberPhone,
-        },
-      },
-    });
-
-    console.log(data, error);
+  const onFinish = async (employee: Employee) => {
+    const employeeSubmit = {
+      ...employee,
+      phone: employee.phone.toString(),
+      id: 0,
+      position: "string",
+      salary: 0,
+    };
+    const res = await createEmployee(employeeSubmit);
+    if (res) {
+      message.success("Tạo tài khoản thành công!");
+      onClose();
+    }
+    message.error("Tạo tài khoản thất bại, vui lòng kiểm tra lại!");
   };
   return (
     <Modal
@@ -78,7 +84,7 @@ export const CreateNewUserComponent = ({ open, onClose }: Props) => {
         </Form.Item>
         <Form.Item
           label="Số điện thoại"
-          name="numberPhone"
+          name="phone"
           rules={[{ required: true, message: "Hãy nhập số điện thoại" }]}
         >
           <InputNumber
@@ -88,7 +94,57 @@ export const CreateNewUserComponent = ({ open, onClose }: Props) => {
             maxLength={11}
           />
         </Form.Item>
-        <Form.Item>
+        <Form.Item
+          label="Ngày sinh"
+          name="birth"
+          rules={[{ required: true, message: "Hãy chọn ngày tháng năm sinh" }]}
+        >
+          <DatePicker className="w-full" />
+        </Form.Item>
+        <Form.Item
+          label="Giới tính"
+          name="gender"
+          rules={[{ required: true, message: "Hãy chọn giới tính" }]}
+        >
+          <Select
+            options={[
+              {
+                value: "Male",
+                label: "Nam",
+              },
+              {
+                value: "FeMale",
+                label: "Nữ",
+              },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Address"
+          name="address"
+          rules={[{ required: true, message: "Hãy nhập địa chỉ liên hệ" }]}
+        >
+          <Input placeholder="Địa chỉ liên hệ" />
+        </Form.Item>
+        <Form.Item
+          label="Vai trò"
+          name="role"
+          rules={[{ required: true, message: "Hãy chọn vai trò" }]}
+        >
+          <Select
+            options={[
+              {
+                label: "Quản trị",
+                value: "Admin",
+              },
+              {
+                label: "Nhân viên",
+                value: "Staff",
+              },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item className="w-full justify-end flex">
           <Button
             type="primary"
             htmlType="submit"

@@ -6,7 +6,9 @@ import {
 import { Button, Form, Input, Modal, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
-import supabase from "../utils/supabaseClient";
+import { login } from "../api/auth";
+import { useContext } from "react";
+import { ProductsContext } from "../components/product-provider";
 
 type Props = {
   open: boolean;
@@ -14,26 +16,21 @@ type Props = {
 };
 export const LoginComponent = ({ open, onClose }: Props) => {
   const [form] = useForm();
+  const { setUserLogin } = useContext(ProductsContext);
 
   const onFinish = async (values: { email: string; password: string }) => {
-    console.log("values", values);
-    const { data } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-    if (data?.user?.id) {
+    const response = await login(values.email, values.password);
+    if (response.status >= 200 && response.status < 300) {
       message.success("Đăng nhập thành công!");
-      sessionStorage.setItem("TKL_login", "true");
-      sessionStorage.setItem("TKL_login_email", data.user?.email || "");
-      sessionStorage.setItem("TKL_login_user", data.user?.id || "");
+      localStorage.setItem("TKL_token", response.data?.token);
+      setUserLogin(response.data?.employee);
       setTimeout(() => {
         onClose();
       }, 500);
     } else {
       message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
-      sessionStorage.setItem("TKL_login", "false");
-      sessionStorage.setItem("TKL_login_user", "");
-      sessionStorage.setItem("TKL_login_email", "");
+      localStorage.removeItem("TKL_token");
+      setUserLogin(null);
     }
   };
 

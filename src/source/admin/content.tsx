@@ -6,8 +6,8 @@ import {
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { UpdateUserComponent } from "../../share/update-user";
 import { EmployeesComponent } from "../../share/employee";
+import { ProductTableComponent } from "../../share/product-table";
 
 export const ContentAdminComponent = () => {
   const [open, setOpen] = useState(false);
@@ -29,20 +29,15 @@ export const ContentAdminComponent = () => {
     {
       key: "2",
       icon: <UserSwitchOutlined />,
-      label: "Thông tin tài khoản",
-    },
-    {
-      key: "3",
-      icon: <UserSwitchOutlined />,
       label: "Quản trị nhân sự",
     },
   ];
 
   const renderComponent = () => {
-    if (key == "2") {
-      return <UpdateUserComponent />;
+    if (key === "1") {
+      return <ProductTableComponent />;
     }
-    if (key === "3") {
+    if (key === "2") {
       return <EmployeesComponent />;
     }
     return <></>;

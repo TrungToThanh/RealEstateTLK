@@ -8,9 +8,11 @@ import {
 import { Avatar, Button, Card, InputNumber, Row, Space, Watermark } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Product } from "../types/types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ProductsDetail } from "./product-details";
 import { wardsList } from "../const/wards";
+import dayjs from "dayjs";
+import { ProductsContext } from "../components/product-provider";
 
 type CardProductComponentProps = {
   setOpenModalContact: (value: boolean) => void;
@@ -22,6 +24,7 @@ export const CardProductComponent = ({
   product,
 }: CardProductComponentProps) => {
   const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
+  const { employee } = useContext(ProductsContext);
 
   const wardName =
     wardsList?.find((item) => item.wardId === product.ward)?.ward || "";
@@ -43,8 +46,13 @@ export const CardProductComponent = ({
                     className="border-1 bg-slate-500"
                   />
                   <div className="px-2">
-                    <p className="text-xs"> N.V.Linh</p>
-                    <p className="text-xs"> 12/06/2024</p>
+                    <p className="text-xs">
+                      {employee?.find((x) => x.id === product.createdBy)
+                        ?.name || ""}
+                    </p>
+                    <p className="text-xs">
+                      {dayjs(product.createdAt).format("DD/MM/YYYY")}
+                    </p>
                   </div>
                 </p>
                 <Space>

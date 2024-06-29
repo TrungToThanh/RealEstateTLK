@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export type NotificationType = "success" | "info" | "warning" | "error";
 
 export interface Product {
@@ -15,7 +17,7 @@ export interface Product {
   ward?: string;
   location?: string;
   status: number;
-  createdBy?: string;
+  createdBy?: number;
   createdAt: string;
   images: string[];
   thumbnail: string;
@@ -34,4 +36,18 @@ export type Profile = {
 export type Address = {
   label: string;
   value: string;
+};
+
+export type Employee = {
+  id?: number;
+  name: string;
+  position: string;
+  phone: string;
+  birth: string | Dayjs;
+  salary: number;
+  password: string;
+  email: string;
+  role: string;
+  gender: string;
+  address: string;
 };

@@ -13,16 +13,17 @@ import {
 } from "antd";
 import Upload from "antd/es/upload/Upload";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { GetDistricts, GetProvinces, GetWards } from "../api/location";
-import { Product } from "../types/types";
+import { Address, Product } from "../types/types";
 import { createProduct } from "../api/product";
 import { v4 as uuidv4 } from "uuid";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import axios from "axios";
 import { RcFile } from "antd/es/upload";
 import { apiUrl } from "../const/const";
+import { ProductsContext } from "../components/product-provider";
+import { wardsList } from "../const/wards";
 
 type Props = {
   open: boolean;
@@ -31,35 +32,64 @@ type Props = {
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export const CreateItemComponent = ({ open, onClose }: Props) => {
-  const [provincesOptions, setProvincesOptions] = useState([]);
-  const [districtsOptions, setDistrictsOptions] = useState([]);
-  const [wardsOptions, setWardsOptions] = useState([]);
+  const [districtsOptions, setDistrictsOptions] = useState<Address[]>([]);
+  const [wardsOptions, setWardsOptions] = useState<Address[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [base64, setBase64] = useState("");
+  const { provinces: provincesOptions, userLogin } =
+    useContext(ProductsContext);
 
   const [form] = useForm();
 
   useEffect(() => {
     const getInfo = async () => {
-      const provinces = await GetProvinces();
-      setProvincesOptions(provinces);
       setDistrictsOptions([]);
       setWardsOptions([]);
     };
     getInfo();
   }, []);
 
-  const handleGetDistricts = async (Id: string) => {
+  const handleGetDistricts = async (provinceId: string) => {
     form.setFieldsValue({ districts: "" });
     form.setFieldsValue({ wards: "" });
 
-    const districts = await GetDistricts(Id);
+    const districtsSet = new Set();
+    const districts: Address[] = [];
+
+    wardsList
+      .filter((item) => item.provinceId === provinceId)
+      .forEach((item) => {
+        const key = `${item.district}_${item.districtId}`;
+        if (!districtsSet.has(key)) {
+          districtsSet.add(key);
+          districts.push({
+            label: item.district,
+            value: item.districtId,
+          });
+        }
+      });
+
     setDistrictsOptions(districts);
     setWardsOptions([]);
   };
 
-  const handleGetWards = async (Id: string) => {
-    const wards = await GetWards(Id);
+  const handleGetWards = async (districtId: string) => {
+    const wardsSet = new Set();
+    const wards: Address[] = [];
+
+    wardsList
+      .filter((item) => item.districtId === districtId)
+      .forEach((item) => {
+        const key = `${item.ward}_${item.wardId}`;
+        if (!wardsSet.has(key)) {
+          wardsSet.add(key);
+          wards.push({
+            label: item.ward || "",
+            value: item.wardId || "",
+          });
+        }
+      });
+
     setWardsOptions(wards);
   };
 
@@ -114,7 +144,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
       ward: values.ward || "",
       location: values.location || "",
       status: 0,
-      createdBy: sessionStorage.getItem("TKL_login_user") || "",
+      createdBy: userLogin?.id || 0,
       createdAt: dayjs().toISOString(),
       images: [imagesList],
       thumbnail: base64,

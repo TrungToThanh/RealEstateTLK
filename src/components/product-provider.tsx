@@ -1,13 +1,17 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Address, Product } from "../types/types";
+import { Address, Employee, Product } from "../types/types";
 import { getProducts } from "../api/product";
 import { wardsList } from "../const/wards";
+import { getEmployees } from "../api/employee";
 
 interface ContextInterface {
   products: Product[];
   wards: Address[];
   districts: Address[];
   provinces: Address[];
+  employee: Employee[];
+  userLogin: Employee | null;
+  setUserLogin: (employee: Employee | null) => void;
 }
 
 const getContext: () => ContextInterface = () => ({
@@ -15,6 +19,9 @@ const getContext: () => ContextInterface = () => ({
   wards: [],
   districts: [],
   provinces: [],
+  employee: [],
+  userLogin: null,
+  setUserLogin: () => null,
 });
 
 const initialContext = getContext();
@@ -27,11 +34,16 @@ export const ProductsProvider = ({
   children: React.ReactNode;
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [userLoginAccount, setUserLogin] = useState<Employee | null>(null);
 
   useEffect(() => {
     const getInitial = async () => {
       const products = await getProducts();
       setProducts(products || []);
+
+      const employee = await getEmployees();
+      setEmployees(employee);
     };
 
     getInitial();
@@ -87,6 +99,10 @@ export const ProductsProvider = ({
   // Use Set to remove duplicates based on province and provinceId
   const uniqueDistricts = Array.from(districts);
 
+  const handleSetUserLogin = (employee: Employee | null) => {
+    setUserLogin(employee);
+  };
+
   return (
     <ProductsContext.Provider
       value={{
@@ -94,6 +110,9 @@ export const ProductsProvider = ({
         provinces: uniqueProvinces,
         districts: uniqueDistricts,
         wards: uniqueWards,
+        employee: employees,
+        userLogin: userLoginAccount,
+        setUserLogin: handleSetUserLogin,
       }}
     >
       {children}
