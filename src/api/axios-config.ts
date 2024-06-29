@@ -15,7 +15,7 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // You can add token here if needed
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("TKL_token");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }

@@ -1,30 +1,22 @@
-import axios from 'axios';
-import { apiUrl } from '../const/const';
 import { Employee } from '../types/types';
-
-const apiClient = axios.create({
-    baseURL: `${apiUrl}/api/Employee/`, // Adjust base URL as needed
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+import { axiosInstance } from './axios-config';
 
 export const getEmployees = async():Promise<Employee[]> => {
-    const response = await apiClient.get('/get-employees');
+    const response = await axiosInstance.get('/Employee/get-employees');
     return response.data;
 };
 
 export const createEmployee = async (employee: Employee): Promise<Employee> => {
-    const response = await apiClient.post<Employee>('/create-employee', employee);
+    const response = await axiosInstance.post<Employee>('/Employee/create-employee', employee);
     return response.data;
 };
 
 export const editEmployee = async (id: number, employee: Employee) => {
-    const response = await apiClient.put(`/update-employee/${id}`, employee);
+    const response = await axiosInstance.put(`/Employee/update-employee/${id}`, employee);
     return response.data;
 };
 
 export const deleteEmployee = async (id: number) => {
-    const response = await apiClient.delete(`/delete-employee/${id}`);
+    const response = await axiosInstance.delete(`/Employee/delete-employee/${id}`);
     return response.data;
 };

@@ -19,11 +19,11 @@ import { Address, Product } from "../types/types";
 import { createProduct } from "../api/product";
 import { v4 as uuidv4 } from "uuid";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import axios from "axios";
 import { RcFile } from "antd/es/upload";
 import { apiUrl } from "../const/const";
 import { ProductsContext } from "../components/product-provider";
 import { wardsList } from "../const/wards";
+import { axiosInstance } from "../api/axios-config";
 
 type Props = {
   open: boolean;
@@ -104,7 +104,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
     });
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${apiUrl}/api/Products/upload?id=${productId}`,
         formData,
         {
