@@ -49,8 +49,8 @@ export const HeaderComponent = () => {
           rel="noopener noreferrer"
           href="https://www.antgroup.com"
         >
-          <div>XIN CHÀO!</div>
-          {localStorage.getItem("TKL_login_email")}
+          <div>Xin chào {localStorage.getItem("TKL_user_login_name")} !</div>
+
           <Divider className="m-0" />
         </a>
       ),

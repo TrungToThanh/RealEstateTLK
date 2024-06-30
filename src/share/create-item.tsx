@@ -36,8 +36,9 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
   const [wardsOptions, setWardsOptions] = useState<Address[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [base64, setBase64] = useState("");
-  const { provinces: provincesOptions, userLogin } =
-    useContext(ProductsContext);
+  const { provinces: provincesOptions } = useContext(ProductsContext);
+
+  const userLoginId = localStorage.getItem("TKL_user_login_id");
 
   const [form] = useForm();
 
@@ -144,7 +145,7 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
       ward: values.ward || "",
       location: values.location || "",
       status: 0,
-      createdBy: userLogin?.id || 0,
+      createdBy: userLoginId ? +userLoginId : 0,
       createdAt: dayjs().toISOString(),
       images: [imagesList],
       thumbnail: base64,
@@ -280,6 +281,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="square"
             >
               <InputNumber
+                controls={false}
+                min={0}
                 placeholder="diện tích"
                 addonAfter="m2"
                 maxLength={5}
@@ -299,6 +302,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="length"
             >
               <InputNumber
+                controls={false}
+                min={0}
                 placeholder="Chiều dài"
                 addonAfter="m"
                 maxLength={5}
@@ -320,6 +325,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="frontwidth"
             >
               <InputNumber
+                controls={false}
+                min={0}
                 placeholder="Mặt trước"
                 addonAfter="m"
                 maxLength={5}
@@ -339,6 +346,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="backwidth"
             >
               <InputNumber
+                controls={false}
+                min={0}
                 placeholder="Mặt sau"
                 addonAfter="m"
                 maxLength={5}
@@ -360,7 +369,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="executionPrice"
             >
               <InputNumber<number>
-                defaultValue={1000}
+                controls={false}
+                min={0}
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -384,7 +394,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
               name="price"
             >
               <InputNumber<number>
-                defaultValue={1000}
+                controls={false}
+                min={0}
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }

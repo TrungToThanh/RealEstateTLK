@@ -1,0 +1,14 @@
+.card {
+    [class~="ant-card-body"] {  
+      padding: 4px !important;
+      margin: 0px;
+    }
+    [class~="ant-card-actions"] {  
+        padding: 0px !important;
+        margin: 0px;
+        .li{
+            padding: 0px !important;
+        }
+      }
+   
+  }

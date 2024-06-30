@@ -7,8 +7,6 @@ import { Button, Form, Input, Modal, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { login } from "../api/auth";
-import { useContext } from "react";
-import { ProductsContext } from "../components/product-provider";
 
 type Props = {
   open: boolean;
@@ -16,21 +14,30 @@ type Props = {
 };
 export const LoginComponent = ({ open, onClose }: Props) => {
   const [form] = useForm();
-  const { setUserLogin } = useContext(ProductsContext);
 
   const onFinish = async (values: { email: string; password: string }) => {
     const response = await login(values.email, values.password);
     if (response.status >= 200 && response.status < 300) {
       message.success("Đăng nhập thành công!");
       localStorage.setItem("TKL_token", response.data?.token);
-      setUserLogin(response.data?.employee);
+      localStorage.setItem("TKL_user_login_id", response.data?.employee?.id);
+      localStorage.setItem(
+        "TKL_user_login_name",
+        response.data?.employee?.name
+      );
+      localStorage.setItem(
+        "TKL_user_login_mail",
+        response.data?.employee?.email
+      );
       setTimeout(() => {
         onClose();
       }, 500);
     } else {
       message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
       localStorage.removeItem("TKL_token");
-      setUserLogin(null);
+      localStorage.removeItem("TKL_user_login_id");
+      localStorage.removeItem("TKL_user_login_name");
+      localStorage.removeItem("TKL_user_login_mail");
     }
   };
 

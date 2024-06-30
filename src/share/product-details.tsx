@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   Divider,
   Flex,
@@ -20,20 +21,30 @@ import "swiper/css/thumbs";
 
 // import required modules
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getImages } from "../api/product";
 import { apiUrl } from "../const/const";
 import { wardsList } from "../const/wards";
+import { ProductsContext } from "../components/product-provider";
+import { PhoneOutlined } from "@ant-design/icons";
 
 type Props = {
   product: Product;
   open: boolean;
   onClose: () => void;
+  setOpenModalContact: () => void;
 };
-export const ProductsDetail = ({ product, open, onClose }: Props) => {
+export const ProductsDetail = ({
+  product,
+  open,
+  onClose,
+  setOpenModalContact,
+}: Props) => {
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 480px)",
   });
+  const { employee } = useContext(ProductsContext);
+
   const [thumbsSwiper, setThumbsSwiper] = useState(product.thumbnail);
   const [imagePaths, setImagePaths] = useState<string[]>([]);
 
@@ -67,7 +78,7 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
       >
         <Flex wrap>
           <Card
-            title={`Thông tin sản phẩm: ${product.title}`}
+            title={` ${product.title}`}
             className={isDesktopOrLaptop ? "!w-[800px]" : "!w-full"}
           >
             <Image
@@ -121,7 +132,10 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
                 province: provinceName,
                 district: districtName,
                 ward: wardName,
-                users: product.createdBy || "12122",
+                users:
+                  employee?.find(
+                    (x) => Number(x.id) === Number(product.createdBy)
+                  )?.name || "",
                 googleMap: product.location || "",
                 square: product.square || 0,
                 length: product.length || 0,
@@ -132,6 +146,7 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
               <Form.Item label="Mô tả" name="description">
                 <Input.TextArea bordered={false} readOnly />
               </Form.Item>
+              <Divider>Vị trí bất động sản</Divider>
               <Form.Item label="Vị trí" noStyle></Form.Item>
               <Form.Item label="Tỉnh/TP" name="province">
                 <Input bordered={false} readOnly />
@@ -143,11 +158,11 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
                 <Input bordered={false} readOnly />
               </Form.Item>
               <Form.Item label="Bản đồ" name="googleMap">
-                <Input bordered={false} readOnly />
+                <a href={product.location}>{product.location}</a>
               </Form.Item>
-              <Divider />
+              <Divider>Đặc điểm bất động sản</Divider>
               <Flex>
-                <Form.Item label="Diện tích (m2)" name="square">
+                <Form.Item label={"Diện tích (m2)"} name="square">
                   <Input bordered={false} readOnly />
                 </Form.Item>
                 <Form.Item label="Chiều dài (m)" name="length">
@@ -162,12 +177,23 @@ export const ProductsDetail = ({ product, open, onClose }: Props) => {
                   <Input bordered={false} readOnly />
                 </Form.Item>
               </Flex>
-              <Divider />
-              <Form.Item label="Mô giới" name="users">
-                <Input bordered={false} readOnly />
+              <Divider>Thông tin môi giới</Divider>
+              <Form.Item label="Môi giới" name="users">
+                <Input
+                  bordered={false}
+                  readOnly
+                  suffix={
+                    <Button
+                      size="small"
+                      icon={<PhoneOutlined />}
+                      onClick={setOpenModalContact}
+                    >
+                      Liên hệ
+                    </Button>
+                  }
+                />
               </Form.Item>
             </Form>
-            <Divider />
           </Card>
         </Flex>
       </Modal>
