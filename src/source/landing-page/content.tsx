@@ -9,29 +9,33 @@ export const ContentComponent = () => {
   const { isIpad, isLaptop } = useGetSizeDevices();
   return (
     <Content
-      className={`max-h-[900px] max-w-[1200px] overflow-auto mt-20 pb-40`}
+      id="content"
+      className={`flex max-h-[900px] overflow-auto mt-20 justify-center`}
     >
-      <Carousel autoplay>
-        <div>
-          <img
-            src={banner1}
-            style={{
-              height: isLaptop ? 220 : isIpad ? 200 : 140,
-              width: "100%",
-            }}
-          />
-        </div>
-        <div>
-          <img
-            src={banner2}
-            style={{
-              height: isLaptop ? 220 : isIpad ? 200 : 140,
-              width: "100%",
-            }}
-          />
-        </div>
-      </Carousel>
-      <ProductComponent />
+      <div className="w-full max-w-[1200px]">
+        <Carousel autoplay className="mt-2">
+          <div>
+            <img
+              src={banner1}
+              style={{
+                height: isLaptop ? 220 : isIpad ? 200 : 140,
+                width: "100%",
+              }}
+            />
+          </div>
+          <div>
+            <img
+              src={banner2}
+              style={{
+                height: isLaptop ? 220 : isIpad ? 200 : 140,
+                width: "100%",
+              }}
+            />
+          </div>
+        </Carousel>
+        <ProductComponent />
+        <div className="pb-40"></div>
+      </div>
     </Content>
   );
 };

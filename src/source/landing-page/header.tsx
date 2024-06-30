@@ -19,13 +19,15 @@ import {
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginComponent } from "../../share/login";
 import { CreateItemComponent } from "../../share/create-item";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchMobileComponent } from "../../share/search-mobile";
 
 import { useGetSizeDevices } from "../../hooks/use-get-size-devices";
+import { useCheckLogin } from "../../hooks/decode_token";
+import { jwtDecode } from "jwt-decode";
 
 const { Search } = Input;
 export const HeaderComponent = () => {
@@ -34,7 +36,15 @@ export const HeaderComponent = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [isLogin, setLogin] = useState(false);
+
   const isHideSearchBar = location.pathname?.includes("/admin");
+
+  const isExpired = useCheckLogin(localStorage.getItem("TKL_token") || "");
+
+  useEffect(() => {
+    setLogin(!isExpired);
+  }, [isExpired]);
 
   const { isLaptop } = useGetSizeDevices();
 
@@ -84,10 +94,10 @@ export const HeaderComponent = () => {
   ];
 
   return (
-    <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0 max-w-[1200px] ">
-      <div className="bg-white">
-        <Flex className="w-full justify-between items-center" wrap>
-          <Flex onClick={() => navigator("/")}>
+    <Header className="flex fixed z-50 w-full bg-white p-0 t-0 m-0 justify-center h-20 shadow-md">
+      <div className="w-full max-w-[1200px]">
+        <Flex className="w-full justify-between items-center ">
+          <Flex onClick={() => navigator("/")} className="cursor-pointer">
             <Image
               src={logoImage}
               width={100}
@@ -95,24 +105,25 @@ export const HeaderComponent = () => {
               sizes="large"
               preview={false}
             />
-            <div>
-              <div
-                className={`${
-                  isLaptop ? "text-[28px]" : "text-[18px]"
-                } font-semibold text-blue-700 m-0 p-0 h-8 text-start`}
-              >
-                THỔ KIM <span className="text-yellow-500"> LAND </span>
-              </div>
-              {isLaptop && (
+            {isLaptop && (
+              <div>
+                <div
+                  className={`${
+                    isLaptop ? "text-[28px]" : "text-[18px]"
+                  } font-semibold text-blue-700 m-0 p-0 h-8 text-start`}
+                >
+                  THỔ KIM <span className="text-yellow-500"> LAND </span>
+                </div>
+
                 <div className="h-4 font-semibold">
                   Phố Gốt, Xã Đông Sơn, Huyện Chương Mỹ, Hà Nội
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </Flex>
-          {isLaptop && !isHideSearchBar && (
+          {!isHideSearchBar && (
             <Search
-              className="w-[500px]"
+              className="max-w-[500px]"
               placeholder="Tìm kiếm bất động sản bạn quan tâm"
               allowClear
               onClick={() => setShowSearch(true)}
@@ -126,16 +137,25 @@ export const HeaderComponent = () => {
               icon={<FormOutlined />}
               iconPosition="end"
               onClick={() => {
-                if (!localStorage.getItem("TKL_token")) {
-                  message.error("Bạn chưa đăng nhập!");
+                const decoded = jwtDecode(
+                  localStorage.getItem("TKL_token") || ""
+                );
+
+                // Check if the token is expired
+                const currentTime = Math.floor(Date.now() / 1000);
+                if (decoded?.exp && decoded?.exp < currentTime) {
+                  return message.error(
+                    "Bạn chưa đăng nhập! Hoặc phiên đăng nhập đã hết hiệu lực, vui lòng đăng nhập lại!"
+                  );
+                  setLogin(false);
                 } else {
                   setShowCreateItem(true);
                 }
               }}
             >
-              Tạo tin
+              {isLaptop ? "Tạo tin" : ""}
             </Button>
-            {localStorage.getItem("TKL_token") ? (
+            {isLogin ? (
               <Dropdown menu={{ items }} className="mt-1">
                 <Avatar
                   style={{ backgroundColor: "#87d068" }}
@@ -153,22 +173,6 @@ export const HeaderComponent = () => {
             )}
           </Flex>
         </Flex>
-        {!isHideSearchBar && (
-          <Flex className="p-2">
-            {isLaptop ? (
-              // <SearchComponent />
-              <></>
-            ) : (
-              <Search
-                placeholder="input search text"
-                allowClear
-                className="w-full m-0 p-0"
-                style={{ width: "100%" }}
-                onClick={() => setShowSearch(true)}
-              />
-            )}
-          </Flex>
-        )}
       </div>
       {showLogin && (
         <LoginComponent open={showLogin} onClose={() => setShowLogin(false)} />

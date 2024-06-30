@@ -1,9 +1,11 @@
 ﻿#root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   background: #fff;
   text-align: center;
-  overflow: hidden;
+  /* overflow: hidden; */
+  justify-content: center;
+  display: flex;
 }
 
 body {
@@ -15,7 +17,7 @@ body {
   scrollbar-width: thin;
 }
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
 }
 /* Track */
 ::-webkit-scrollbar-track {

@@ -8,7 +8,6 @@ import { ProductsContext } from "../components/product-provider";
 import dayjs from "dayjs";
 
 export const ProductComponent = () => {
-  const [pageSizeValue, setPageSize] = useState(8);
   const [showAll, setShowProduct] = useState(false); //true: show all, false: show new
   const [openModalContact, setOpenModalContact] = useState(false);
 
@@ -27,9 +26,11 @@ export const ProductComponent = () => {
   }, [products]);
 
   return (
-    <>
-      <div className="sticky top-0 z-50 bg-white">
-        <Flex className={`w-full items-center justify-between my-4`}>
+    <div>
+      <div className="sticky top-0 z-50">
+        <Flex
+          className={`w-full sticky top-0 z-50 items-center justify-between my-2 bg-[#1677ff] p-1 rounded-md`}
+        >
           <Segmented
             options={[
               {
@@ -47,7 +48,7 @@ export const ProductComponent = () => {
               setShowProduct(value === "all");
             }}
           />
-          <p className="text-md font-bold px-2">
+          <p className="text-md font-bold px-2 text-white">
             Hiện có:{" "}
             {showAll ? products?.length || 0 : newProducts?.length || 0} tin
           </p>
@@ -55,15 +56,7 @@ export const ProductComponent = () => {
       </div>
 
       <List
-        pagination={{
-          position: "bottom",
-          align: "center",
-          pageSize: pageSizeValue,
-          onChange(page, pageSize) {
-            console.log(page);
-            setPageSize(pageSize);
-          },
-        }}
+        className="mb-40"
         grid={{
           gutter: 0,
           xs: 1,
@@ -73,7 +66,7 @@ export const ProductComponent = () => {
           xl: 3,
           xxl: 3,
         }}
-        dataSource={products || []}
+        dataSource={showAll ? products || [] : newProducts || []}
         renderItem={(product: Product) => (
           <List.Item>
             <div className="px-2">
@@ -89,6 +82,6 @@ export const ProductComponent = () => {
         open={openModalContact}
         onClose={() => setOpenModalContact(false)}
       />
-    </>
+    </div>
   );
 };
