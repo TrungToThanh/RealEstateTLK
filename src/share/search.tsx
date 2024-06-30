@@ -6,14 +6,19 @@ import { useContext } from "react";
 import { ProductsContext } from "../components/product-provider";
 import { wardsList } from "../const/wards";
 import { Address } from "../types/types";
+import { searchProducts } from "../api/product";
 
 export const SearchComponent = () => {
-  const { provinces: provincesOption } = useContext(ProductsContext);
-
+  const {
+    provinces: provincesOption,
+    setProductSearch,
+    setResetProducts,
+  } = useContext(ProductsContext);
   const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
   const [wardsOption, setWardsOptions] = useState<Address[]>([]);
   const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 100 m2");
   const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1 tỷ");
+  const [showDelete, setShowDelete] = useState(false);
 
   const [form] = useForm();
 
@@ -60,7 +65,16 @@ export const SearchComponent = () => {
 
     setWardsOptions(wards);
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onFinish = async (values: any) => {
+    const products = await searchProducts(
+      values.province,
+      values.district,
+      values.ward
+    );
+    setProductSearch(products);
+    setShowDelete(true);
+  };
   return (
     <Form
       name="search"
@@ -78,9 +92,10 @@ export const SearchComponent = () => {
         priceFrom: "0",
         priceTo: "1000000000",
       }}
+      onFinish={onFinish}
     >
       <Space.Compact size="large">
-        <Form.Item className="font-bold" label="Tỉnh/TP:" name="provinces">
+        <Form.Item className="font-bold" label="Tỉnh/TP:" name="province">
           <Select
             defaultValue="Hà Nội"
             style={{ width: 180 }}
@@ -89,14 +104,14 @@ export const SearchComponent = () => {
           />
         </Form.Item>
 
-        <Form.Item className="font-bold" label="Huyện:" name="districts">
+        <Form.Item className="font-bold" label="Huyện:" name="district">
           <Select
             style={{ width: 180 }}
             options={districtsOption}
             onChange={(Id) => handleGetWards(Id)}
           />
         </Form.Item>
-        <Form.Item className="font-bold" label="Xã:" name="wards">
+        <Form.Item className="font-bold" label="Xã:" name="ward">
           <Select style={{ width: 180 }} options={wardsOption} />
         </Form.Item>
         <Form.Item className="font-bold" label="Diện tích:">
@@ -199,9 +214,24 @@ export const SearchComponent = () => {
           />
         </Form.Item>
         <Form.Item label=" " name=" ">
-          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-            Tìm Kiếm
-          </Button>
+          <Button.Group>
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+              Tìm Kiếm
+            </Button>
+            {showDelete && (
+              <Button
+                ghost
+                danger
+                onClick={() => {
+                  form.resetFields();
+                  setShowDelete(false);
+                  setResetProducts();
+                }}
+              >
+                Hiển thị tất cả
+              </Button>
+            )}
+          </Button.Group>
         </Form.Item>
       </Space.Compact>
     </Form>

@@ -11,7 +11,9 @@ interface ContextInterface {
   provinces: Address[];
   employee: Employee[];
   userLogin: Employee | null;
+  setProductSearch: (products: Product[]) => void;
   setUserLogin: (employee: Employee | null) => void;
+  setResetProducts: () => void;
 }
 
 const getContext: () => ContextInterface = () => ({
@@ -21,7 +23,9 @@ const getContext: () => ContextInterface = () => ({
   provinces: [],
   employee: [],
   userLogin: null,
+  setProductSearch: () => null,
   setUserLogin: () => null,
+  setResetProducts: () => null,
 });
 
 const initialContext = getContext();
@@ -103,6 +107,15 @@ export const ProductsProvider = ({
     setUserLogin(employee);
   };
 
+  const handleSetProducts = (products: Product[]) => {
+    setProducts(products);
+  };
+
+  const handleResetProduct = async () => {
+    const products = await getProducts();
+    setProducts(products || []);
+  };
+
   return (
     <ProductsContext.Provider
       value={{
@@ -113,6 +126,8 @@ export const ProductsProvider = ({
         employee: employees,
         userLogin: userLoginAccount,
         setUserLogin: handleSetUserLogin,
+        setProductSearch: handleSetProducts,
+        setResetProducts: handleResetProduct,
       }}
     >
       {children}

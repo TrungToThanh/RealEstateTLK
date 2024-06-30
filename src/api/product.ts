@@ -16,6 +16,11 @@ export const uploadImages = async (productId: string, formData:FormData): Promis
     return response.data;
 };
 
+export const searchProducts = async (province: string,district:string, ward: string ): Promise<Product[]> => {
+    const response = await axiosInstance.get<Product[]>(`/Products/search-products?province=${province}&district=${district}&ward=${ward}`);
+    return response.data;
+};
+
 export const getProductDetail = async (id: string): Promise<Product> => {
     const response = await axiosInstance.get<Product>(`/Products/get-product/${id}`);
     return response.data;

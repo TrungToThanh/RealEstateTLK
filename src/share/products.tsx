@@ -18,11 +18,14 @@ export const ProductComponent = () => {
   const { products } = useContext(ProductsContext);
 
   const newProducts = useMemo(() => {
+    if (!products.length) return [];
     const list =
-      products?.filter((product) => {
-        console.log(dayjs().diff(dayjs(product.createdAt), "days"));
-        return dayjs().diff(dayjs(product.createdAt), "days") < 1;
-      }) || [];
+      (products &&
+        products?.filter((product) => {
+          console.log(dayjs().diff(dayjs(product.createdAt), "days"));
+          return dayjs().diff(dayjs(product.createdAt), "days") < 1;
+        })) ||
+      [];
     return list;
   }, [products]);
 
@@ -76,7 +79,7 @@ export const ProductComponent = () => {
           xl: 3,
           xxl: 4,
         }}
-        dataSource={showAll ? products : newProducts}
+        dataSource={products || []}
         renderItem={(product: Product) => (
           <List.Item>
             <div className="px-2">

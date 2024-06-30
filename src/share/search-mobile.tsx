@@ -5,6 +5,7 @@ import { useForm } from "antd/es/form/Form";
 import { ProductsContext } from "../components/product-provider";
 import { Address } from "../types/types";
 import { wardsList } from "../const/wards";
+import { searchProducts } from "../api/product";
 
 type Props = {
   open: boolean;
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export const SearchMobileComponent = ({ open, onClose }: Props) => {
-  const { provinces: provincesOption } = useContext(ProductsContext);
+  const { provinces: provincesOption, setProductSearch } =
+    useContext(ProductsContext);
 
   const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
   const [wardsOption, setWardsOptions] = useState<Address[]>([]);
@@ -65,6 +67,16 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
     setWardsOptions(wards);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onFinish = async (values: any) => {
+    const products = await searchProducts(
+      values.province,
+      values.district,
+      values.ward
+    );
+    setProductSearch(products);
+  };
+
   return (
     <Modal
       open={open}
@@ -88,6 +100,7 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
           priceFrom: "0",
           priceTo: "1000000000",
         }}
+        onFinish={onFinish}
       >
         <Form.Item className="font-bold" label="Tỉnh/TP:" name="provinces">
           <Select
