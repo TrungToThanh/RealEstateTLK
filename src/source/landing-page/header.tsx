@@ -16,15 +16,16 @@ import {
   LoginOutlined,
   LogoutOutlined,
   ProductOutlined,
+  SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { LoginComponent } from "../../share/login";
-import { useMediaQuery } from "react-responsive";
-import { SearchComponent } from "../../share/search";
 import { CreateItemComponent } from "../../share/create-item";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchMobileComponent } from "../../share/search-mobile";
+
+import { useGetSizeDevices } from "../../hooks/use-get-size-devices";
 
 const { Search } = Input;
 export const HeaderComponent = () => {
@@ -32,13 +33,10 @@ export const HeaderComponent = () => {
   const location = useLocation();
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
-  const [showSearchMobile, setShowSearchMobile] = useState(false);
-
+  const [showSearch, setShowSearch] = useState(false);
   const isHideSearchBar = location.pathname?.includes("/admin");
 
-  const isDesktopOrLaptop = useMediaQuery({
-    query: "(min-width: 1190px)",
-  });
+  const { isLaptop } = useGetSizeDevices();
 
   const items = [
     {
@@ -86,7 +84,7 @@ export const HeaderComponent = () => {
   ];
 
   return (
-    <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0 max-w-[1200px]">
+    <Header className="block fixed z-50 w-full bg-white p-0 t-0 m-0 max-w-[1200px] ">
       <div className="bg-white">
         <Flex className="w-full justify-between items-center" wrap>
           <Flex onClick={() => navigator("/")}>
@@ -100,18 +98,27 @@ export const HeaderComponent = () => {
             <div>
               <div
                 className={`${
-                  isDesktopOrLaptop ? "text-[28px]" : "text-[18px]"
+                  isLaptop ? "text-[28px]" : "text-[18px]"
                 } font-semibold text-blue-700 m-0 p-0 h-8 text-start`}
               >
                 THỔ KIM <span className="text-yellow-500"> LAND </span>
               </div>
-              {isDesktopOrLaptop && (
+              {isLaptop && (
                 <div className="h-4 font-semibold">
                   Phố Gốt, Xã Đông Sơn, Huyện Chương Mỹ, Hà Nội
                 </div>
               )}
             </div>
           </Flex>
+          {isLaptop && !isHideSearchBar && (
+            <Search
+              className="w-[500px]"
+              placeholder="Tìm kiếm bất động sản bạn quan tâm"
+              allowClear
+              onClick={() => setShowSearch(true)}
+              enterButton={<SearchOutlined />}
+            />
+          )}
           <Flex className="px-2" gap={8}>
             <Button
               type="primary"
@@ -141,22 +148,23 @@ export const HeaderComponent = () => {
                 icon={<LoginOutlined />}
                 onClick={() => setShowLogin(true)}
               >
-                {isDesktopOrLaptop ? "Đăng nhập" : ""}
+                {isLaptop ? "Đăng nhập" : ""}
               </Button>
             )}
           </Flex>
         </Flex>
         {!isHideSearchBar && (
           <Flex className="p-2">
-            {isDesktopOrLaptop ? (
-              <SearchComponent />
+            {isLaptop ? (
+              // <SearchComponent />
+              <></>
             ) : (
               <Search
                 placeholder="input search text"
                 allowClear
                 className="w-full m-0 p-0"
                 style={{ width: "100%" }}
-                onClick={() => setShowSearchMobile(true)}
+                onClick={() => setShowSearch(true)}
               />
             )}
           </Flex>
@@ -175,8 +183,8 @@ export const HeaderComponent = () => {
       )}
       {
         <SearchMobileComponent
-          open={showSearchMobile}
-          onClose={() => setShowSearchMobile(false)}
+          open={showSearch}
+          onClose={() => setShowSearch(false)}
         />
       }
     </Header>

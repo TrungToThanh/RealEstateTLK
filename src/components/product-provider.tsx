@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
 import { Address, Employee, Product } from "../types/types";
-import { getProducts } from "../api/product";
 import { wardsList } from "../const/wards";
 import { getEmployees } from "../api/employee";
 
@@ -10,10 +9,7 @@ interface ContextInterface {
   districts: Address[];
   provinces: Address[];
   employee: Employee[];
-  userLogin: Employee | null;
   setProductSearch: (products: Product[]) => void;
-  setUserLogin: (employee: Employee | null) => void;
-  setResetProducts: () => void;
 }
 
 const getContext: () => ContextInterface = () => ({
@@ -22,10 +18,7 @@ const getContext: () => ContextInterface = () => ({
   districts: [],
   provinces: [],
   employee: [],
-  userLogin: null,
   setProductSearch: () => null,
-  setUserLogin: () => null,
-  setResetProducts: () => null,
 });
 
 const initialContext = getContext();
@@ -39,12 +32,19 @@ export const ProductsProvider = ({
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [userLoginAccount, setUserLogin] = useState<Employee | null>(null);
 
   useEffect(() => {
     const getInitial = async () => {
-      const products = await getProducts();
-      setProducts(products || []);
+      // const products = await searchProducts({
+      //   province: undefined,
+      //   district: undefined,
+      //   ward: undefined,
+      //   priceFrom: 0,
+      //   priceTo: 0,
+      //   squareFrom: 0,
+      //   squareTo: 0,
+      // });
+      // setProducts(products || []);
 
       const employee = await getEmployees();
       setEmployees(employee);
@@ -103,17 +103,8 @@ export const ProductsProvider = ({
   // Use Set to remove duplicates based on province and provinceId
   const uniqueDistricts = Array.from(districts);
 
-  const handleSetUserLogin = (employee: Employee | null) => {
-    setUserLogin(employee);
-  };
-
   const handleSetProducts = (products: Product[]) => {
     setProducts(products);
-  };
-
-  const handleResetProduct = async () => {
-    const products = await getProducts();
-    setProducts(products || []);
   };
 
   return (
@@ -124,10 +115,7 @@ export const ProductsProvider = ({
         districts: uniqueDistricts,
         wards: uniqueWards,
         employee: employees,
-        userLogin: userLoginAccount,
-        setUserLogin: handleSetUserLogin,
         setProductSearch: handleSetProducts,
-        setResetProducts: handleResetProduct,
       }}
     >
       {children}

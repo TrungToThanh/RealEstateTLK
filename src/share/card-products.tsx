@@ -5,7 +5,7 @@ import {
   ShareAltOutlined,
   TagsOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Card, InputNumber, Row, Space, Watermark } from "antd";
+import { Avatar, Button, Card, Row, Space, Tooltip, Watermark } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Product } from "../types/types";
 import { useContext, useState } from "react";
@@ -13,7 +13,7 @@ import { ProductsDetail } from "./product-details";
 import { wardsList } from "../const/wards";
 import dayjs from "dayjs";
 import { ProductsContext } from "../components/product-provider";
-
+import logo from "../assets/logowhite.png";
 import styles from "./card-product.module.scss";
 type CardProductComponentProps = {
   setOpenModalContact: (value: boolean) => void;
@@ -29,6 +29,43 @@ export const CardProductComponent = ({
 
   const wardName =
     wardsList?.find((item) => item.wardId === product.ward)?.ward || "";
+  const districtName =
+    wardsList?.find((item) => item.districtId === product.district)?.district ||
+    "";
+  const provinceName =
+    wardsList?.find((item) => item.provinceId === product.province)?.province ||
+    "";
+
+  const handleModifyPrice = (value: number) => {
+    if (!value) return "";
+
+    // Remove non-numeric characters
+    const numericValue = value.toString()?.replace(/[^0-9]/g, "");
+
+    const isLogin = sessionStorage.getItem("TKL_login") === "true";
+
+    if (isLogin) {
+      return `${numericValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    const displayValue =
+      numericValue.length > 9
+        ? Math.floor(Number(numericValue) / 1000000000)
+        : numericValue.length > 6
+        ? Math.floor(Number(numericValue) / 1000000)
+        : numericValue;
+
+    return (
+      `${displayValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+      `${
+        numericValue.length > 9
+          ? ",xxx tỷ"
+          : numericValue.length > 6
+          ? ",xxx triệu"
+          : " đồng"
+      }`
+    );
+  };
   return (
     <>
       <Card
@@ -38,7 +75,13 @@ export const CardProductComponent = ({
         style={{ padding: 0, margin: 0 }}
         cover={
           <>
-            <Watermark content="Tho Kim Land">
+            <Watermark
+              content="Tho Kim Land"
+              image={logo}
+              height={50}
+              width={120}
+              gap={[300, 250]}
+            >
               <img
                 alt="example"
                 src={product.thumbnail}
@@ -97,63 +140,30 @@ export const CardProductComponent = ({
           title={
             <Row onClick={() => setOpenModalProductDetail(true)}>
               <div className="text-wrap block text-md text-start pt-0">
-                <p className="text-xl px-4"> {product.title} </p>
-                <p className="text-red-500 font-bold bg-transparent px-1">
-                  <InputNumber
-                    bordered={true}
-                    className="text-red-700 w-fit border-0 bg-transparent"
-                    value={product.price}
-                    prefix={<TagsOutlined />}
-                    formatter={(value) => {
-                      if (!value) return "";
-
-                      // Remove non-numeric characters
-                      const numericValue = value
-                        .toString()
-                        ?.replace(/[^0-9]/g, "");
-
-                      const isLogin =
-                        sessionStorage.getItem("TKL_login") === "true";
-
-                      if (isLogin) {
-                        return `${numericValue}`.replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ","
-                        );
-                      }
-
-                      const displayValue =
-                        numericValue.length > 9
-                          ? Math.floor(Number(numericValue) / 1000000000)
-                          : numericValue.length > 6
-                          ? Math.floor(Number(numericValue) / 1000000)
-                          : numericValue;
-
-                      return (
-                        `${displayValue}`.replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ","
-                        ) +
-                        `${
-                          numericValue.length > 9
-                            ? ",xxx tỷ"
-                            : numericValue.length > 6
-                            ? ",xxx triệu"
-                            : " đồng"
-                        }`
-                      );
-                    }}
-                    parser={(value) =>
-                      value?.replace(/\$\s?|(,*)/g, "") as unknown as number
-                    }
-                    readOnly
-                  />
+                <p className="text-md px-4 text-blue-900 font-bold">
+                  {product.title}
+                </p>
+                <p className="bg-transparent px-4">
+                  <TagsOutlined />
+                  <span className="px-1 text-red-700">
+                    {handleModifyPrice(product.price)}
+                  </span>
                 </p>
                 <p className="px-4">
-                  <ShareAltOutlined /> {wardName}
+                  <ShareAltOutlined />
+                  <Tooltip
+                    destroyTooltipOnHide
+                    title={`${provinceName}-${districtName}-${wardName}`}
+                  >
+                    <span className="w-full wrap text-xs px-1">{wardName}</span>
+                  </Tooltip>
                 </p>
-                <p className="px-4">
-                  <GatewayOutlined /> <span>{product.square}</span>
+                <p className="px-4 text-xs pb-2">
+                  <GatewayOutlined />
+                  <span className="px-1">
+                    Diện tích: {product.square}m2 | Mặt tiền:{" "}
+                    {product.frontWidth}m
+                  </span>
                 </p>
               </div>
             </Row>

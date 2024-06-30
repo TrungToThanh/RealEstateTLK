@@ -14,7 +14,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  sessionStorage.setItem("login", "false");
   return <RouterProvider router={router} />;
 }
 

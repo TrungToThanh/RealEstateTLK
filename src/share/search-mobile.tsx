@@ -1,11 +1,12 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Select } from "antd";
-import { useContext, useState } from "react";
+import { Button, Form, InputNumber, Modal, Select, Space } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { ProductsContext } from "../components/product-provider";
-import { Address } from "../types/types";
+import { Address, ProductSearch } from "../types/types";
 import { wardsList } from "../const/wards";
 import { searchProducts } from "../api/product";
+import { defaultSearch } from "../const/const";
 
 type Props = {
   open: boolean;
@@ -15,13 +16,22 @@ type Props = {
 export const SearchMobileComponent = ({ open, onClose }: Props) => {
   const { provinces: provincesOption, setProductSearch } =
     useContext(ProductsContext);
-
   const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
   const [wardsOption, setWardsOptions] = useState<Address[]>([]);
-  const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 100 m2");
-  const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1 tỷ");
+  const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 1000 m2");
+  const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1000 tỷ");
+  const [showDelete, setShowDelete] = useState(false);
 
   const [form] = useForm();
+
+  const getDefaultProducts = async () => {
+    const products = await searchProducts(defaultSearch);
+    setProductSearch(products || []);
+  };
+
+  useEffect(() => {
+    getDefaultProducts();
+  }, []);
 
   const handleGetDistricts = async (provinceId: string) => {
     form.setFieldsValue({ districts: "" });
@@ -66,23 +76,28 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
 
     setWardsOptions(wards);
   };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onFinish = async (values: any) => {
-    const products = await searchProducts(
-      values.province,
-      values.district,
-      values.ward
-    );
+  const onFinish = async (values: ProductSearch) => {
+    const products = await searchProducts({
+      province: values.province,
+      district: values.district,
+      ward: values.ward,
+      priceFrom: values.priceFrom || 0,
+      priceTo: values.priceTo || 0,
+      squareFrom: values.squareFrom || 0,
+      squareTo: values.squareTo || 0,
+    });
     setProductSearch(products);
+    setShowDelete(true);
+    onClose();
   };
-
   return (
     <Modal
       open={open}
       footer={<></>}
       onCancel={onClose}
       title="Tìm kiếm chi tiết"
+      className="w-full"
     >
       <Form
         name="searchMobile"
@@ -92,33 +107,31 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
         className="w-full justify-between mx-auto p-2 border rounded-md bg-white"
         form={form}
         initialValues={{
-          provinces: "Hà Nội",
-          districts: "Chương Mỹ",
-          wards: "Đông Sơn",
-          squareFrom: "0",
-          squareTo: "100",
-          priceFrom: "0",
-          priceTo: "1000000000",
+          provinces: "",
+          districts: "",
+          wards: "",
+          squareFrom: 0,
+          squareTo: 0,
+          priceFrom: 0,
+          priceTo: 0,
         }}
         onFinish={onFinish}
       >
-        <Form.Item className="font-bold" label="Tỉnh/TP:" name="provinces">
+        <Form.Item className="font-bold" label="Tỉnh/TP:" name="province">
           <Select
-            className="w-full"
-            defaultValue="Hà Nội"
             options={provincesOption}
             onChange={(Id) => handleGetDistricts(Id)}
+            className="w-full"
           />
         </Form.Item>
 
-        <Form.Item className="font-bold" label="Huyện:" name="districts">
+        <Form.Item className="font-bold" label="Huyện:" name="district">
           <Select
-            className="w-full"
             options={districtsOption}
             onChange={(Id) => handleGetWards(Id)}
           />
         </Form.Item>
-        <Form.Item className="font-bold" label="Xã:" name="wards">
+        <Form.Item className="font-bold" label="Xã:" name="ward">
           <Select options={wardsOption} />
         </Form.Item>
         <Form.Item className="font-bold" label="Diện tích:">
@@ -136,7 +149,12 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2 mt-2"
                 >
-                  <Input placeholder="Từ" className="w-full" suffix="m2" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Từ"
+                    className="w-full"
+                    suffix="m2"
+                  />
                 </Form.Item>
                 <Form.Item
                   className="font-bold"
@@ -145,7 +163,12 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2"
                 >
-                  <Input placeholder="Đến" className="w-full" suffix="m2" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Đến"
+                    className="w-full"
+                    suffix="m2"
+                  />
                 </Form.Item>
                 <Form.Item noStyle>
                   <div className="flex justify-end w-full px-2">
@@ -170,8 +193,8 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
 
         <Form.Item className="font-bold" label="Mức giá:">
           <Select
-            options={[]}
             value={valuePriceSearch}
+            options={[]}
             popupClassName="!w-[350px]"
             className="w-[350px]"
             dropdownRender={() => (
@@ -183,7 +206,12 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2 mt-2"
                 >
-                  <Input placeholder="Từ" className="w-full" suffix="VNĐ" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Từ"
+                    className="w-full"
+                    suffix="VNĐ"
+                  />
                 </Form.Item>
                 <Form.Item
                   className="font-bold"
@@ -192,7 +220,12 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2"
                 >
-                  <Input placeholder="Đến" className="w-full" suffix="VNĐ" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Đến"
+                    className="w-full"
+                    suffix="VNĐ"
+                  />
                 </Form.Item>
                 <Form.Item
                   labelCol={{ span: 3 }}
@@ -218,11 +251,25 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
             )}
           />
         </Form.Item>
-        <Form.Item className="w-full justify-end flex">
+        <Space className="w-full justify-end">
+          {showDelete && (
+            <Button
+              ghost
+              danger
+              onClick={() => {
+                form.resetFields();
+                setShowDelete(false);
+                getDefaultProducts();
+                onClose();
+              }}
+            >
+              Xóa nội dung tìm kiếm
+            </Button>
+          )}
           <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
             Tìm Kiếm
           </Button>
-        </Form.Item>
+        </Space>
       </Form>
     </Modal>
   );

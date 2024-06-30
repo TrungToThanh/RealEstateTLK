@@ -8,6 +8,7 @@ import {
   Input,
   InputNumber,
   Modal,
+  Watermark,
 } from "antd";
 import { Product } from "../types/types";
 import { useMediaQuery } from "react-responsive";
@@ -27,6 +28,7 @@ import { apiUrl } from "../const/const";
 import { wardsList } from "../const/wards";
 import { ProductsContext } from "../components/product-provider";
 import { PhoneOutlined } from "@ant-design/icons";
+import logo from "../assets/logowhite.png";
 
 type Props = {
   product: Product;
@@ -81,11 +83,21 @@ export const ProductsDetail = ({
             title={` ${product.title}`}
             className={isDesktopOrLaptop ? "!w-[800px]" : "!w-full"}
           >
-            <Image
-              src={thumbsSwiper}
-              width={isDesktopOrLaptop ? 600 : "100%"}
-              height={isDesktopOrLaptop ? 400 : 300}
-            />
+            <Watermark
+              content="Tho Kim Land"
+              image={logo}
+              height={50}
+              width={120}
+              gap={[200, 200]}
+              // offset={[0, 10]}
+              className="bg-transparent"
+            >
+              <Image
+                src={thumbsSwiper}
+                width={isDesktopOrLaptop ? 800 : "100%"}
+                height={isDesktopOrLaptop ? 400 : 300}
+              />
+            </Watermark>
             <Swiper
               loop={true}
               spaceBetween={10}

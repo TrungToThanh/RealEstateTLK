@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
         // Show notification for 401 errors
-        message.error("Bạn chưa đăng nhập hoặc đăng nhập sai mật khẩu!");
+        // message.error("Bạn chưa đăng nhập hoặc đăng nhập sai mật khẩu!");
 
         // Optionally, redirect to login page or handle logout
         // window.location.href = '/login'; // Uncomment if you want to redirect to the login page

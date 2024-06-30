@@ -51,3 +51,13 @@ export type Employee = {
   gender: string;
   address: string;
 };
+
+export type ProductSearch = {
+  province?: string;
+  district?: string;
+  ward?: string;
+  priceFrom?: number;
+  priceTo?: number;
+  squareFrom?: number;
+  squareTo?: number;
+};

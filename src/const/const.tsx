@@ -5,3 +5,13 @@ export enum ProductStatus {
   Going = "Going",
   Done = "Done",
 }
+
+export const defaultSearch = {
+  province: "",
+  district: "",
+  ward: "",
+  priceFrom: 0,
+  priceTo: 0,
+  squareFrom: 0,
+  squareTo: 0,
+};

@@ -1,26 +1,33 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Space } from "antd";
-import { useState } from "react";
+import { Button, Form, InputNumber, Select, Space } from "antd";
+import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { useContext } from "react";
 import { ProductsContext } from "../components/product-provider";
 import { wardsList } from "../const/wards";
-import { Address } from "../types/types";
+import { Address, ProductSearch } from "../types/types";
 import { searchProducts } from "../api/product";
+import { defaultSearch } from "../const/const";
 
 export const SearchComponent = () => {
-  const {
-    provinces: provincesOption,
-    setProductSearch,
-    setResetProducts,
-  } = useContext(ProductsContext);
+  const { provinces: provincesOption, setProductSearch } =
+    useContext(ProductsContext);
   const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
   const [wardsOption, setWardsOptions] = useState<Address[]>([]);
-  const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 100 m2");
-  const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1 tỷ");
+  const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 1000 m2");
+  const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1000 tỷ");
   const [showDelete, setShowDelete] = useState(false);
 
   const [form] = useForm();
+
+  const getDefaultProducts = async () => {
+    const products = await searchProducts(defaultSearch);
+    setProductSearch(products || []);
+  };
+
+  useEffect(() => {
+    getDefaultProducts();
+  }, []);
 
   const handleGetDistricts = async (provinceId: string) => {
     form.setFieldsValue({ districts: "" });
@@ -66,12 +73,16 @@ export const SearchComponent = () => {
     setWardsOptions(wards);
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onFinish = async (values: any) => {
-    const products = await searchProducts(
-      values.province,
-      values.district,
-      values.ward
-    );
+  const onFinish = async (values: ProductSearch) => {
+    const products = await searchProducts({
+      province: values.province,
+      district: values.district,
+      ward: values.ward,
+      priceFrom: values.priceFrom || 0,
+      priceTo: values.priceTo || 0,
+      squareFrom: values.squareFrom || 0,
+      squareTo: values.squareTo || 0,
+    });
     setProductSearch(products);
     setShowDelete(true);
   };
@@ -84,20 +95,19 @@ export const SearchComponent = () => {
       className="w-full justify-between mx-auto p-2 border rounded-md bg-white"
       form={form}
       initialValues={{
-        provinces: "Hà Nội",
-        districts: "Chương Mỹ",
-        wards: "Đông Sơn",
-        squareFrom: "0",
-        squareTo: "100",
-        priceFrom: "0",
-        priceTo: "1000000000",
+        provinces: "",
+        districts: "",
+        wards: "",
+        squareFrom: 0,
+        squareTo: 0,
+        priceFrom: 0,
+        priceTo: 0,
       }}
       onFinish={onFinish}
     >
       <Space.Compact size="large">
         <Form.Item className="font-bold" label="Tỉnh/TP:" name="province">
           <Select
-            defaultValue="Hà Nội"
             style={{ width: 180 }}
             options={provincesOption}
             onChange={(Id) => handleGetDistricts(Id)}
@@ -130,7 +140,12 @@ export const SearchComponent = () => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2 mt-2"
                 >
-                  <Input placeholder="Từ" className="w-full" suffix="m2" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Từ"
+                    className="w-full"
+                    suffix="m2"
+                  />
                 </Form.Item>
                 <Form.Item
                   className="font-bold"
@@ -139,7 +154,12 @@ export const SearchComponent = () => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2"
                 >
-                  <Input placeholder="Đến" className="w-full" suffix="m2" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Đến"
+                    className="w-full"
+                    suffix="m2"
+                  />
                 </Form.Item>
                 <Form.Item noStyle>
                   <div className="flex justify-end w-full px-2">
@@ -178,7 +198,12 @@ export const SearchComponent = () => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2 mt-2"
                 >
-                  <Input placeholder="Từ" className="w-full" suffix="VNĐ" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Từ"
+                    className="w-full"
+                    suffix="VNĐ"
+                  />
                 </Form.Item>
                 <Form.Item
                   className="font-bold"
@@ -187,7 +212,12 @@ export const SearchComponent = () => {
                   labelCol={{ span: 3 }}
                   rootClassName="px-2"
                 >
-                  <Input placeholder="Đến" className="w-full" suffix="VNĐ" />
+                  <InputNumber
+                    controls={false}
+                    placeholder="Đến"
+                    className="w-full"
+                    suffix="VNĐ"
+                  />
                 </Form.Item>
                 <Form.Item
                   labelCol={{ span: 3 }}
@@ -225,7 +255,7 @@ export const SearchComponent = () => {
                 onClick={() => {
                   form.resetFields();
                   setShowDelete(false);
-                  setResetProducts();
+                  getDefaultProducts();
                 }}
               >
                 Hiển thị tất cả

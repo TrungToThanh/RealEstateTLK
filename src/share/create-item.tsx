@@ -16,11 +16,11 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { Address, Product } from "../types/types";
-import { createProduct } from "../api/product";
+import { createProduct, searchProducts } from "../api/product";
 import { v4 as uuidv4 } from "uuid";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { apiUrl } from "../const/const";
+import { apiUrl, defaultSearch } from "../const/const";
 import { ProductsContext } from "../components/product-provider";
 import { wardsList } from "../const/wards";
 import { axiosInstance } from "../api/axios-config";
@@ -36,7 +36,8 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
   const [wardsOptions, setWardsOptions] = useState<Address[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [base64, setBase64] = useState("");
-  const { provinces: provincesOptions } = useContext(ProductsContext);
+  const { provinces: provincesOptions, setProductSearch } =
+    useContext(ProductsContext);
 
   const userLoginId = localStorage.getItem("TKL_user_login_id");
 
@@ -155,6 +156,10 @@ export const CreateItemComponent = ({ open, onClose }: Props) => {
     const res = await createProduct(valuesSubmit);
     if (res) {
       message.success("Thành công!");
+
+      const products = await searchProducts(defaultSearch);
+      setProductSearch(products);
+
       setTimeout(() => {
         onClose();
       }, 1000);

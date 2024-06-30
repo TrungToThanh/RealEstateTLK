@@ -9,8 +9,7 @@ import { NotificationOutlined, ProfileOutlined } from "@ant-design/icons";
 export const ProductTableComponent = () => {
   const [showAll, setShowProduct] = useState(false); //true: show all, false: show new
   const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
-
-  const { products } = useContext(ProductsContext);
+  const { employee, products } = useContext(ProductsContext);
 
   const newProducts = useMemo(() => {
     const list =
@@ -52,7 +51,11 @@ export const ProductTableComponent = () => {
               className="border-1 bg-slate-500"
             />
             <div className="px-2">
-              <p className="text-xs">{product.createdBy}</p>
+              <p className="text-xs">
+                {employee?.find(
+                  (x) => Number(x.id) === Number(product.createdBy)
+                )?.name || ""}
+              </p>
             </div>
             <p className="text-xs">
               {dayjs(product.createdAt).format("DD/MM/YYYY")}
@@ -75,6 +78,9 @@ export const ProductTableComponent = () => {
             product={product}
             open={openModalProductDetail}
             onClose={() => setOpenModalProductDetail(false)}
+            setOpenModalContact={function (): void {
+              throw new Error("Function not implemented.");
+            }}
           />
         </>
       ),

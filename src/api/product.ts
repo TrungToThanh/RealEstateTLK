@@ -1,4 +1,4 @@
-import { Product } from '../types/types';
+import { Product, ProductSearch } from '../types/types';
 import { axiosInstance } from './axios-config';
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -16,8 +16,8 @@ export const uploadImages = async (productId: string, formData:FormData): Promis
     return response.data;
 };
 
-export const searchProducts = async (province: string,district:string, ward: string ): Promise<Product[]> => {
-    const response = await axiosInstance.get<Product[]>(`/Products/search-products?province=${province}&district=${district}&ward=${ward}`);
+export const searchProducts = async (values: ProductSearch): Promise<Product[]> => {
+    const response = await axiosInstance.get<Product[]>(`/Products/search-products?province=${values?.province}&district=${values?.district}&ward=${values?.ward}&priceFrom=${values?.priceFrom}&priceTo=${values?.priceTo}&squareFrom=${values?.squareFrom}&squareTo=${values?.squareTo}`);
     return response.data;
 };
 
