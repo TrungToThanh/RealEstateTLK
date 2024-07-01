@@ -10,7 +10,7 @@ export const ContentComponent = () => {
   return (
     <Content
       id="content"
-      className={`flex max-h-[900px] overflow-auto mt-20 justify-center`}
+      className={`flex h-full overflow-auto mt-20 justify-center`}
     >
       <div className="w-full max-w-[1200px]">
         <Carousel autoplay className="mt-2">

@@ -1,4 +1,4 @@
-import { Flex, List, Segmented } from "antd";
+import { Empty, Flex, List, Segmented } from "antd";
 import { CardProductComponent } from "./card-products";
 import { NotificationOutlined, ProfileOutlined } from "@ant-design/icons";
 import { useContext, useMemo, useState } from "react";
@@ -54,30 +54,37 @@ export const ProductComponent = () => {
           </p>
         </Flex>
       </div>
-
-      <List
-        className="mb-40"
-        grid={{
-          gutter: 0,
-          xs: 1,
-          sm: 1,
-          md: 2,
-          lg: 3,
-          xl: 3,
-          xxl: 3,
-        }}
-        dataSource={showAll ? products || [] : newProducts || []}
-        renderItem={(product: Product) => (
-          <List.Item>
-            <div className="px-2">
-              <CardProductComponent
-                setOpenModalContact={(value) => setOpenModalContact(value)}
-                product={product}
-              />
-            </div>
-          </List.Item>
-        )}
-      />
+      {!products?.length && !newProducts?.length && (
+        <Empty
+          description={<> Không có dữ liệu </>}
+          className="pt-40 h-[100vh]"
+        />
+      )}
+      {(products?.length > 0 || newProducts?.length > 0) && (
+        <List
+          className="mb-40"
+          grid={{
+            gutter: 0,
+            xs: 1,
+            sm: 1,
+            md: 2,
+            lg: 3,
+            xl: 3,
+            xxl: 3,
+          }}
+          dataSource={showAll ? products || [] : newProducts || []}
+          renderItem={(product: Product) => (
+            <List.Item key={product.id}>
+              <div className="px-2">
+                <CardProductComponent
+                  setOpenModalContact={(value) => setOpenModalContact(value)}
+                  product={product}
+                />
+              </div>
+            </List.Item>
+          )}
+        />
+      )}
       <ModalContact
         open={openModalContact}
         onClose={() => setOpenModalContact(false)}

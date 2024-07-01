@@ -1,8 +1,4 @@
-import {
-  LockOutlined,
-  PlusCircleOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
@@ -17,7 +13,7 @@ export const LoginComponent = ({ open, onClose }: Props) => {
 
   const onFinish = async (values: { email: string; password: string }) => {
     const response = await login(values.email, values.password);
-    if (response.status >= 200 && response.status < 300) {
+    if (response.data?.success) {
       message.success("Đăng nhập thành công!");
       localStorage.setItem("TKL_token", response.data?.token);
       localStorage.setItem("TKL_user_login_id", response.data?.employee?.id);
@@ -32,13 +28,15 @@ export const LoginComponent = ({ open, onClose }: Props) => {
       setTimeout(() => {
         onClose();
       }, 500);
-    } else {
-      message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
-      localStorage.removeItem("TKL_token");
-      localStorage.removeItem("TKL_user_login_id");
-      localStorage.removeItem("TKL_user_login_name");
-      localStorage.removeItem("TKL_user_login_mail");
+
+      return;
     }
+
+    message.error("Thất bại, vui lòng kiểm tra lại thông tin!");
+    localStorage.removeItem("TKL_token");
+    localStorage.removeItem("TKL_user_login_id");
+    localStorage.removeItem("TKL_user_login_name");
+    localStorage.removeItem("TKL_user_login_mail");
   };
 
   return (
@@ -79,14 +77,20 @@ export const LoginComponent = ({ open, onClose }: Props) => {
           </Form.Item>
           <Form.Item>
             <Space className="w-full justify-between">
-              <a className="login-form-forgot" href="">
+              <Button
+                type="link"
+                onClick={() =>
+                  message.info("Liên hệ Admin để cấp mật khẩu mới!")
+                }
+              >
                 Quên mật khẩu
-              </a>
+              </Button>
+
               <Button
                 type="primary"
                 htmlType="submit"
                 ghost
-                icon={<PlusCircleOutlined />}
+                icon={<LoginOutlined />}
               >
                 Đăng nhập
               </Button>

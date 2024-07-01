@@ -1,4 +1,4 @@
-import { SearchOutlined } from "@ant-design/icons";
+import { ReadOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, InputNumber, Modal, Select, Space } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
@@ -18,9 +18,8 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
     useContext(ProductsContext);
   const [districtsOption, setDistrictsOptions] = useState<Address[]>([]);
   const [wardsOption, setWardsOptions] = useState<Address[]>([]);
-  const [valueSquareSearch, setValueSquareSearch] = useState("0 tới 1000 m2");
-  const [valuePriceSearch, setValuePriceSearch] = useState("0 tới 1000 tỷ");
-  const [showDelete, setShowDelete] = useState(false);
+  const [valueSquareSearch, setValueSquareSearch] = useState("");
+  const [valuePriceSearch, setValuePriceSearch] = useState("");
 
   const [form] = useForm();
 
@@ -31,6 +30,9 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
 
   useEffect(() => {
     getDefaultProducts();
+    form.resetFields();
+    setValueSquareSearch("");
+    setValuePriceSearch("");
   }, []);
 
   const handleGetDistricts = async (provinceId: string) => {
@@ -88,7 +90,6 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
       squareTo: values.squareTo || 0,
     });
     setProductSearch(products);
-    setShowDelete(true);
     onClose();
   };
   return (
@@ -98,6 +99,7 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
       onCancel={onClose}
       title="Tìm kiếm chi tiết"
       className="w-full"
+      destroyOnClose={true}
     >
       <Form
         name="searchMobile"
@@ -116,8 +118,20 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
           priceTo: 0,
         }}
         onFinish={onFinish}
+        clearOnDestroy={true}
       >
-        <Form.Item className="font-bold" label="Tỉnh/TP:" name="province">
+        <Form.Item
+          className="font-bold"
+          label="Tỉnh/TP:"
+          name="province"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Vui lòng điền đầy đủ thông tin",
+            },
+          ]}
+        >
           <Select
             options={provincesOption}
             onChange={(Id) => handleGetDistricts(Id)}
@@ -125,16 +139,48 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
           />
         </Form.Item>
 
-        <Form.Item className="font-bold" label="Huyện:" name="district">
+        <Form.Item
+          className="font-bold"
+          label="Huyện:"
+          name="district"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Vui lòng điền đầy đủ thông tin",
+            },
+          ]}
+        >
           <Select
             options={districtsOption}
             onChange={(Id) => handleGetWards(Id)}
           />
         </Form.Item>
-        <Form.Item className="font-bold" label="Xã:" name="ward">
+        <Form.Item
+          className="font-bold"
+          label="Xã:"
+          name="ward"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Vui lòng điền đầy đủ thông tin",
+            },
+          ]}
+        >
           <Select options={wardsOption} />
         </Form.Item>
-        <Form.Item className="font-bold" label="Diện tích:">
+        <Form.Item
+          className="font-bold"
+          label="Diện tích:"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Vui lòng điền đầy đủ thông tin",
+            },
+          ]}
+        >
           <Select
             options={[]}
             value={valueSquareSearch}
@@ -191,7 +237,17 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
           />
         </Form.Item>
 
-        <Form.Item className="font-bold" label="Mức giá:">
+        <Form.Item
+          className="font-bold"
+          label="Mức giá:"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Vui lòng điền đầy đủ thông tin",
+            },
+          ]}
+        >
           <Select
             value={valuePriceSearch}
             options={[]}
@@ -252,22 +308,21 @@ export const SearchMobileComponent = ({ open, onClose }: Props) => {
           />
         </Form.Item>
         <Space className="w-full justify-end">
-          {showDelete && (
-            <Button
-              ghost
-              danger
-              onClick={() => {
-                form.resetFields();
-                setShowDelete(false);
-                getDefaultProducts();
-                onClose();
-              }}
-            >
-              Xóa nội dung tìm kiếm
-            </Button>
-          )}
+          <Button
+            ghost
+            danger
+            onClick={() => {
+              form.resetFields();
+              getDefaultProducts();
+              onClose();
+            }}
+            icon={<ReadOutlined />}
+          >
+            Hiển thị tất cả tin
+          </Button>
+
           <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-            Tìm Kiếm
+            Tìm kiếm
           </Button>
         </Space>
       </Form>

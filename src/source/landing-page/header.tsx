@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { Header } from "antd/es/layout/layout";
 
-import logoImage from "../../assets/logo.jpg";
+import logoImage from "../../assets/logowhite.png";
 import {
   FormOutlined,
   LoginOutlined,
@@ -123,11 +123,14 @@ export const HeaderComponent = () => {
           </Flex>
           {!isHideSearchBar && (
             <Search
-              className="max-w-[500px]"
+              readOnly
+              className="max-w-[500px] pl-2"
               placeholder="Tìm kiếm bất động sản bạn quan tâm"
               allowClear
               onClick={() => setShowSearch(true)}
-              enterButton={<SearchOutlined />}
+              enterButton={
+                <SearchOutlined onClick={() => setShowSearch(true)} />
+              }
             />
           )}
           <Flex className="px-2" gap={8}>
@@ -143,11 +146,12 @@ export const HeaderComponent = () => {
 
                 // Check if the token is expired
                 const currentTime = Math.floor(Date.now() / 1000);
-                if (decoded?.exp && decoded?.exp < currentTime) {
-                  return message.error(
-                    "Bạn chưa đăng nhập! Hoặc phiên đăng nhập đã hết hiệu lực, vui lòng đăng nhập lại!"
+                if (!decoded || (decoded?.exp && decoded?.exp < currentTime)) {
+                  message.error(
+                    "Bạn chưa đăng nhập! Hoặc phiên đăng nhập đã hết hiệu lực, vui lòng thực hiện lại!"
                   );
                   setLogin(false);
+                  return;
                 } else {
                   setShowCreateItem(true);
                 }
