@@ -32,12 +32,15 @@ export const UpdateUserComponent = ({ open, employee, onClose }: Props) => {
 
     const employeeSubmit = {
       ...employee,
+      position: "",
       phone: employee.phone.toString(),
     };
     const res = await editEmployee(employee.id, employeeSubmit);
     if (res) {
       message.success("Cập nhật tài khoản thành công!");
       onClose();
+      window.location.reload();
+      return;
     }
     message.error("Cập nhật tài khoản thất bại, vui lòng kiểm tra lại!");
   };
@@ -64,6 +67,9 @@ export const UpdateUserComponent = ({ open, employee, onClose }: Props) => {
             : dayjs(),
         }}
       >
+        <Form.Item label="Mã nhân viên" name="id">
+          <Input readOnly />
+        </Form.Item>
         <Form.Item
           label="Họ và tên"
           name="name"

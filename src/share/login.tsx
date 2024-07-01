@@ -25,6 +25,7 @@ export const LoginComponent = ({ open, onClose }: Props) => {
         "TKL_user_login_mail",
         response.data?.employee?.email
       );
+      localStorage.setItem("TKL_user_login_role", response.data?.employee?.role);
       setTimeout(() => {
         onClose();
       }, 500);
@@ -37,6 +38,7 @@ export const LoginComponent = ({ open, onClose }: Props) => {
     localStorage.removeItem("TKL_user_login_id");
     localStorage.removeItem("TKL_user_login_name");
     localStorage.removeItem("TKL_user_login_mail");
+    localStorage.removeItem("TKL_user_login_role");
   };
 
   return (

@@ -37,8 +37,11 @@ export const CreateNewUserComponent = ({ open, onClose }: Props) => {
     if (res) {
       message.success("Tạo tài khoản thành công!");
       onClose();
+      window.location.reload();
+      return;
+    } else {
+      message.error("Tạo tài khoản thất bại, vui lòng kiểm tra lại!");
     }
-    message.error("Tạo tài khoản thất bại, vui lòng kiểm tra lại!");
   };
   return (
     <Modal

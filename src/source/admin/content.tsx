@@ -44,8 +44,11 @@ export const ContentAdminComponent = () => {
   };
 
   return (
-    <Layout className="!bg-white mt-16 max-w-[1200px]">
-      <div className="relative overflow-hidden mt-4">
+    <Content
+      id="content"
+      className={`flex h-full overflow-auto mt-28 justify-center`}
+    >
+      <div className="w-full max-w-[1200px]">
         <Flex className="w-full justify-start items-center ">
           <Button
             type="primary"
@@ -80,21 +83,10 @@ export const ContentAdminComponent = () => {
           />
         </Drawer>
 
-        <Layout
-          style={{ padding: "0 24px 24px", backgroundColor: "white" }}
-          className="w-full"
-        >
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
-            {renderComponent()}
-          </Content>
+        <Layout className="w-full">
+          <Content className="mt-8">{renderComponent()}</Content>
         </Layout>
       </div>
-    </Layout>
+    </Content>
   );
 };

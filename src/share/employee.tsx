@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Row, Space, Table } from "antd";
+import { Button, Popconfirm, Row, Space, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { Employee } from "../types/types";
 import {
@@ -7,7 +7,7 @@ import {
   UserAddOutlined,
 } from "@ant-design/icons";
 import { CreateNewUserComponent } from "./create-user";
-import { getEmployees } from "../api/employee";
+import { deleteEmployee, getEmployees } from "../api/employee";
 import dayjs from "dayjs";
 import { UpdateUserComponent } from "./update-user";
 
@@ -15,9 +15,12 @@ export const EmployeesComponent = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isShowCreateUser, setShow] = useState(false);
   const [isUpdateUser, setShowUpdate] = useState(false);
+  const userRole = localStorage.getItem("TKL_user_login_role");
 
-  const handleDelete = (id: number) => {
-    console.log(id);
+  const handleDelete = async (id: number) => {
+    await deleteEmployee(id);
+    message.info("Đã xóa tài khoản");
+    window.location.reload();
   };
 
   const columns = [
@@ -65,36 +68,45 @@ export const EmployeesComponent = () => {
       },
     },
     {
+      title: "Vai trò",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
       title: "Hành động",
       key: "action",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: Employee) => (
         <Space size="middle" className="block justify-between gap-2 w-full">
-          <Button
-            icon={<EditOutlined />}
-            size="small"
-            className="w-full"
-            onClick={() => setShowUpdate(true)}
-          >
-            Chỉnh sửa
-          </Button>
-          <Button
-            ghost
-            type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            size="small"
-            className="mt-2 w-full"
-          >
-            <Popconfirm
-              title="Bạn muốn xóa người dùng?"
-              onConfirm={() => handleDelete(record?.id || 0)}
-              cancelText="Không đồng ý"
-              okText="Đồng ý"
-            >
-              <a>Delete</a>
-            </Popconfirm>
-          </Button>
+          {record.role !== "Admin" && userRole == "Admin" && (
+            <>
+              <Button
+                icon={<EditOutlined />}
+                size="small"
+                className="w-full"
+                onClick={() => setShowUpdate(true)}
+              >
+                Chỉnh sửa
+              </Button>
+              <Button
+                ghost
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+                className="mt-2 w-full"
+              >
+                <Popconfirm
+                  title="Bạn muốn xóa người dùng?"
+                  onConfirm={() => handleDelete(record?.id || 0)}
+                  cancelText="Không đồng ý"
+                  okText="Đồng ý"
+                >
+                  <a>Delete</a>
+                </Popconfirm>
+              </Button>
+            </>
+          )}
           {isUpdateUser && (
             <UpdateUserComponent
               employee={record}
