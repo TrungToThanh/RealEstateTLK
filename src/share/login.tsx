@@ -15,6 +15,9 @@ export const LoginComponent = ({ open, onClose }: Props) => {
     const response = await login(values.email, values.password);
     if (response.data?.success) {
       message.success("Đăng nhập thành công!");
+      message.info(
+        "Mỗi phiên đăng nhập 10 phút! Hết thời gian bạn phải đăng nhập lại!"
+      );
       localStorage.setItem("TKL_token", response.data?.token);
       localStorage.setItem("TKL_user_login_id", response.data?.employee?.id);
       localStorage.setItem(
@@ -25,7 +28,10 @@ export const LoginComponent = ({ open, onClose }: Props) => {
         "TKL_user_login_mail",
         response.data?.employee?.email
       );
-      localStorage.setItem("TKL_user_login_role", response.data?.employee?.role);
+      localStorage.setItem(
+        "TKL_user_login_role",
+        response.data?.employee?.role
+      );
       setTimeout(() => {
         onClose();
       }, 500);
