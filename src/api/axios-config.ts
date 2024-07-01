@@ -1,6 +1,6 @@
 // src/axiosConfig.ts
 import axios from "axios";
-import { message } from "antd";
+// import { message } from "antd";
 import { apiUrl } from "../const/const";
 
 // Create an Axios instance
@@ -41,9 +41,9 @@ axiosInstance.interceptors.response.use(
         // window.location.href = '/login'; // Uncomment if you want to redirect to the login page
       } else {
         // Handle other errors
-        message.error(
-          "Đã có lỗi xảy ra, vui lòng kiểm tra lại hoặc liên hệ hỗ trợ!"
-        );
+        // message.error(
+        //   "Đã có lỗi xảy ra, vui lòng kiểm tra lại hoặc liên hệ hỗ trợ!"
+        // );
       }
     }
     return Promise.reject(error);
