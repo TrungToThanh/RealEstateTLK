@@ -1,8 +1,8 @@
 import { Layout, message } from "antd";
 import { ContentAdminComponent } from "./content";
-import { HeaderComponent } from "../landing-page/header";
 import { useCheckLogin } from "../../hooks/decode_token";
 import { useNavigate } from "react-router-dom";
+import { HeaderComponent } from "../../components/header";
 
 export const AdminPage = () => {
   const navigator = useNavigate();

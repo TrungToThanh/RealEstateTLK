@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { Header } from "antd/es/layout/layout";
 
-import logoImage from "../../assets/logowhite.png";
+import logoImage from "../assets/logowhite.png";
 import {
   FormOutlined,
   LoginOutlined,
@@ -20,14 +20,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { LoginComponent } from "../../share/login";
-import { CreateItemComponent } from "../../share/create-item";
-import { useLocation, useNavigate } from "react-router-dom";
-import { SearchMobileComponent } from "../../share/search-mobile";
 
-import { useGetSizeDevices } from "../../hooks/use-get-size-devices";
-import { useCheckLogin } from "../../hooks/decode_token";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { jwtDecode } from "jwt-decode";
+import { useCheckLogin } from "../hooks/decode_token";
+import { useGetSizeDevices } from "../hooks/use-get-size-devices";
+import { LoginComponent } from "../share/login";
+import { CreateItemComponent } from "../share/create-item";
+import { SearchMobileComponent } from "../share/search-mobile";
 
 const { Search } = Input;
 export const HeaderComponent = () => {
