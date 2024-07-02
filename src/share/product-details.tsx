@@ -89,7 +89,7 @@ export const ProductsDetail = ({
               height={50}
               width={120}
               gap={[200, 200]}
-              className="bg-transparent rounded-full bg-white"
+              className="bg-transparent bg-white"
             >
               <Image
                 src={thumbsSwiper}
