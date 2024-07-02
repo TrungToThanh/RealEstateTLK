@@ -3,12 +3,14 @@ import { Button, Form, Input, Modal, Space, message } from "antd";
 // import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { login } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 export const LoginComponent = ({ open, onClose }: Props) => {
+  const navigate = useNavigate();
   const [form] = useForm();
 
   const onFinish = async (values: { email: string; password: string }) => {
@@ -32,6 +34,7 @@ export const LoginComponent = ({ open, onClose }: Props) => {
         "TKL_user_login_role",
         response.data?.employee?.role
       );
+      navigate("/products");
       setTimeout(() => {
         onClose();
       }, 500);

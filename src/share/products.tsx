@@ -8,9 +8,9 @@ import { ProductsContext } from "../components/product-provider";
 import dayjs from "dayjs";
 
 export const ProductComponent = () => {
-  const [showAll, setShowProduct] = useState(false); //true: show all, false: show new
+  const [showAll, setShowProduct] = useState(true); //true: show all, false: show new
   const [openModalContact, setOpenModalContact] = useState(false);
-
+  const [userId, setUserId] = useState<number>();
   const { products } = useContext(ProductsContext);
 
   const newProducts = useMemo(() => {
@@ -34,14 +34,14 @@ export const ProductComponent = () => {
           <Segmented
             options={[
               {
-                label: "Tin mới",
-                value: "new",
-                icon: <NotificationOutlined />,
-              },
-              {
                 label: "Tất cả",
                 value: "all",
                 icon: <ProfileOutlined />,
+              },
+              {
+                label: "Tin mới",
+                value: "new",
+                icon: <NotificationOutlined />,
               },
             ]}
             onChange={(value) => {
@@ -78,6 +78,7 @@ export const ProductComponent = () => {
               <div className="px-2">
                 <CardProductComponent
                   setOpenModalContact={(value) => setOpenModalContact(value)}
+                  setUserId={(value) => setUserId(value)}
                   product={product}
                 />
               </div>
@@ -87,6 +88,7 @@ export const ProductComponent = () => {
       )}
       <ModalContact
         open={openModalContact}
+        userId={userId}
         onClose={() => setOpenModalContact(false)}
       />
     </div>

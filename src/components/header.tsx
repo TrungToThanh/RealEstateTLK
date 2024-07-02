@@ -17,6 +17,7 @@ import {
   LogoutOutlined,
   ProductOutlined,
   SearchOutlined,
+  SwapOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -31,7 +32,10 @@ import { CreateItemComponent } from "../share/create-item";
 import { SearchMobileComponent } from "../share/search-mobile";
 
 const { Search } = Input;
-export const HeaderComponent = () => {
+type Props = {
+  isLanding?: boolean;
+};
+export const HeaderComponent = ({ isLanding = false }: Props) => {
   const navigator = useNavigate();
   const location = useLocation();
   const [showLogin, setShowLogin] = useState(false);
@@ -67,19 +71,31 @@ export const HeaderComponent = () => {
     {
       key: "2",
       label: (
-        <div className="text-blue-800">
+        <div>
+          <SwapOutlined /> Đổi mật khẩu
+        </div>
+      ),
+      onClick: async () => {
+        message.info("Tính năng này sẽ được phát triển ở giai đoạn 2");
+      },
+    },
+    {
+      key: "3",
+      label: (
+        <div>
           <ProductOutlined /> Quản trị
           <Divider className="m-0" />
         </div>
       ),
       onClick: async () => {
         if (localStorage.getItem("TKL_token")) {
+          message.info("Bạn nên sử dụng chức năng này ở trình duyệt máy tính!");
           navigator("/admin");
         }
       },
     },
     {
-      key: "3",
+      key: "4",
       danger: true,
       label: (
         <>
@@ -122,7 +138,7 @@ export const HeaderComponent = () => {
               </div>
             )}
           </Flex>
-          {!isHideSearchBar && (
+          {!isHideSearchBar && !isLanding && (
             <Search
               readOnly
               className="max-w-[500px] pl-2"

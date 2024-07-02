@@ -15,14 +15,17 @@ import dayjs from "dayjs";
 import { ProductsContext } from "../components/product-provider";
 import logo from "../assets/logowhite.png";
 import styles from "./card-product.module.scss";
+import { handleModifyPrice } from "../utils/price";
 type CardProductComponentProps = {
   setOpenModalContact: (value: boolean) => void;
   product: Product;
+  setUserId: (value: number) => void;
 };
 
 export const CardProductComponent = ({
   setOpenModalContact,
   product,
+  setUserId,
 }: CardProductComponentProps) => {
   const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
   const { employee } = useContext(ProductsContext);
@@ -36,36 +39,6 @@ export const CardProductComponent = ({
     wardsList?.find((item) => item.provinceId === product.province)?.province ||
     "";
 
-  const handleModifyPrice = (value: number) => {
-    if (!value) return "";
-
-    // Remove non-numeric characters
-    const numericValue = value.toString()?.replace(/[^0-9]/g, "");
-
-    const isLogin = sessionStorage.getItem("TKL_login") === "true";
-
-    if (isLogin) {
-      return `${numericValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    const displayValue =
-      numericValue.length > 9
-        ? Math.floor(Number(numericValue) / 1000000000)
-        : numericValue.length > 6
-        ? Math.floor(Number(numericValue) / 1000000)
-        : numericValue;
-
-    return (
-      `${displayValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-      `${
-        numericValue.length > 9
-          ? ",xxx tỷ"
-          : numericValue.length > 6
-          ? ",xxx triệu"
-          : " đồng"
-      }`
-    );
-  };
   return (
     <>
       <Card
@@ -80,7 +53,8 @@ export const CardProductComponent = ({
               image={logo}
               height={50}
               width={120}
-              gap={[300, 250]}
+              rotate={-20}
+              gap={[100, 140]}
             >
               <img
                 alt="example"
@@ -129,7 +103,10 @@ export const CardProductComponent = ({
                 />
                 <Button
                   icon={<PhoneOutlined />}
-                  onClick={() => setOpenModalContact(true)}
+                  onClick={() => {
+                    setOpenModalContact(true);
+                    setUserId(product.createdBy || 0);
+                  }}
                 />
               </Space>
             </Space>
@@ -140,7 +117,7 @@ export const CardProductComponent = ({
           title={
             <Row onClick={() => setOpenModalProductDetail(true)}>
               <div className="text-wrap block text-md text-start pt-0">
-                <p className="text-md px-4 text-blue-900 font-bold">
+                <p className="text-md px-4 text-blue-900 font-bold h-12">
                   {product.title}
                 </p>
                 <p className="bg-transparent px-4">

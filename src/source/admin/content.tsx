@@ -1,92 +1,88 @@
-import { Button, Drawer, Flex, Layout, Menu } from "antd";
+import { Button, Layout, Menu, Space } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
-  UnorderedListOutlined,
+  RollbackOutlined,
   UserAddOutlined,
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { EmployeesComponent } from "../../share/employee";
-import { ProductTableComponent } from "../../share/product-table";
+import Sider from "antd/es/layout/Sider";
+import { useNavigate } from "react-router-dom";
 
 export const ContentAdminComponent = () => {
-  const [open, setOpen] = useState(false);
-
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
+  const navigate = useNavigate();
   const [key, setKey] = useState("1");
   const sideBarMenu = [
     {
       key: "1",
+      icon: <UserSwitchOutlined />,
+      label: "Quản trị nhân sự",
+    },
+    {
+      key: "2",
       icon: <UserAddOutlined />,
       label: "Tin đã đăng",
     },
     {
-      key: "2",
+      key: "3",
       icon: <UserSwitchOutlined />,
-      label: "Quản trị nhân sự",
+      label: "Thống kê",
+    },
+    {
+      key: "4",
+      icon: <UserSwitchOutlined />,
+      label: "Báo cáo",
+    },
+    {
+      key: "5",
+      icon: <UserSwitchOutlined />,
+      label: "Thiết lập thông số",
+    },
+    {
+      key: "6",
+      icon: <UserSwitchOutlined />,
+      label: "Phê duyệt người dùng",
     },
   ];
 
   const renderComponent = () => {
     if (key === "1") {
-      return <ProductTableComponent />;
-    }
-    if (key === "2") {
       return <EmployeesComponent />;
     }
-    return <></>;
+    return <> Chức năng sẽ phát triển ở giai đoạn 2</>;
   };
 
   return (
-    <Content
-      id="content"
-      className={`flex h-full overflow-auto mt-28 justify-center`}
-    >
-      <div className="w-full max-w-[1200px]">
-        <Flex className="w-full justify-start items-center ">
-          <Button
-            type="primary"
-            onClick={showDrawer}
-            icon={<UnorderedListOutlined />}
-          />
-          <div className="mx-2 py-1 text-xl font-bold w-full justify-center bg-gray-100 border rounded-xl">
+    <Layout style={{ minHeight: "100vh" }} className="pt-20 bg-white">
+      <Sider collapsible className="bg-white" width={400}>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["1"]}
+          items={sideBarMenu}
+          onClick={(value) => {
+            setKey(value.key);
+          }}
+        />
+      </Sider>
+      <Content className="w-full h-[1200px] mx-auto mt-2">
+        <Space className="flex w-full justify-between px-10">
+          <div className="w-full flex  bg-slate-100 h-10 text-2xl font-bold justify-center">
             {sideBarMenu.find((item) => item.key === key)?.label}
           </div>
-        </Flex>
-        <Drawer
-          title="Quản trị"
-          placement="left"
-          closable={true}
-          onClose={onClose}
-          open={open}
-          getContainer={false}
-          className="!w-fit"
-          styles={{
-            body: { padding: 0, margin: 0, height: 800 },
-          }}
-        >
-          <Menu
-            mode="inline"
-            className="w-full"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["1"]}
-            items={sideBarMenu}
-            onClick={(value) => {
-              setKey(value.key);
-            }}
-          />
-        </Drawer>
-
-        <Layout className="w-full">
-          <Content className="mt-8">{renderComponent()}</Content>
-        </Layout>
-      </div>
-    </Content>
+          <Button
+            type="primary"
+            ghost
+            onClick={() => navigate("/products")}
+            icon={<RollbackOutlined />}
+          >
+            Về trang sản phẩm
+          </Button>
+        </Space>
+        <div className="px-10 pt-4">{renderComponent()}</div>
+      </Content>
+    </Layout>
   );
 };

@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Card,
   Divider,
@@ -76,7 +77,7 @@ export const ProductsDetail = ({
         footer={<></>}
         onCancel={onClose}
         title="Chi tiết sản phẩm"
-        className={isDesktopOrLaptop ? "!w-[1200px]" : "w-[300px]"}
+        className={isDesktopOrLaptop ? "!w-[1200px] z-0" : "w-[300px] z-0"}
       >
         <Flex wrap>
           <Card
@@ -89,8 +90,7 @@ export const ProductsDetail = ({
               height={50}
               width={120}
               gap={[200, 200]}
-              // offset={[0, 10]}
-              className="bg-transparent"
+              className="bg-transparent rounded-full bg-white"
             >
               <Image
                 src={thumbsSwiper}

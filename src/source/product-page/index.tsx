@@ -1,13 +1,12 @@
 import { FloatButton, Layout, Tooltip } from "antd";
 
 import { FacebookOutlined, WhatsAppOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { LandingPageComponent } from "../../components/landing-page";
 import { ContentComponent } from "./content";
 import { HeaderComponent } from "../../components/header";
+import { useNavigate } from "react-router-dom";
 
 export const ProductPage = () => {
-  const [isShowLanding, setShowLanding] = useState(false);
+  const navigate = useNavigate();
   return (
     <Layout className="w-full h-full bg-[#f9f9f9]">
       <HeaderComponent />
@@ -27,7 +26,7 @@ export const ProductPage = () => {
         <Tooltip title="Liên hệ với chúng tôi">
           <FloatButton
             icon={<WhatsAppOutlined />}
-            onClick={() => setShowLanding(true)}
+            onClick={() => navigate("/")}
           />
         </Tooltip>
         <Tooltip title="Lên đầu trang">
@@ -42,12 +41,6 @@ export const ProductPage = () => {
           />
         </Tooltip>
       </FloatButton.Group>
-      {isShowLanding && (
-        <LandingPageComponent
-          open={isShowLanding}
-          onClose={() => setShowLanding(false)}
-        />
-      )}
     </Layout>
   );
 };
