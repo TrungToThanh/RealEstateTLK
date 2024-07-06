@@ -156,16 +156,23 @@ export const HeaderComponent = ({ isLanding = false }: Props) => {
               ghost
               icon={<FormOutlined />}
               iconPosition="end"
+              hidden={isExpired}
               onClick={() => {
+                if (isExpired) {
+                  message.error("Bạn chưa đăng nhập!");
+                  setLogin(false);
+                  return;
+                }
+
                 const decoded = jwtDecode(
                   localStorage.getItem("TKL_token") || ""
                 );
 
                 // Check if the token is expired
                 const currentTime = Math.floor(Date.now() / 1000);
-                if (!decoded || (decoded?.exp && decoded?.exp < currentTime)) {
+                if (decoded?.exp && decoded?.exp < currentTime) {
                   message.error(
-                    "Bạn chưa đăng nhập! Hoặc phiên đăng nhập đã hết hiệu lực, vui lòng thực hiện lại!"
+                    "Phiên đăng nhập đã hết hiệu lực, vui lòng thực hiện lại!"
                   );
                   setLogin(false);
                   return;

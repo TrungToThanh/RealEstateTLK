@@ -1,19 +1,19 @@
-import { Button, Popconfirm, Row, Space, Table, message } from "antd";
+import { Button, Popconfirm, Space, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { Employee } from "../types/types";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { CreateNewUserComponent } from "./create-user";
 import { deleteEmployee, getEmployees } from "../api/employee";
 import dayjs from "dayjs";
 import { UpdateUserComponent } from "./update-user";
 
-export const EmployeesComponent = () => {
+type Props = {
+  isShowCreateUser: boolean;
+  setShow: (value: boolean) => void;
+};
+
+export const EmployeesComponent = ({ isShowCreateUser, setShow }: Props) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [isShowCreateUser, setShow] = useState(false);
   const [isUpdateUser, setShowUpdate] = useState(false);
   const userRole = localStorage.getItem("TKL_user_login_role");
 
@@ -102,7 +102,7 @@ export const EmployeesComponent = () => {
                   cancelText="Không đồng ý"
                   okText="Đồng ý"
                 >
-                  <a>Delete</a>
+                  <a>Xóa</a>
                 </Popconfirm>
               </Button>
             </>
@@ -129,15 +129,6 @@ export const EmployeesComponent = () => {
 
   return (
     <>
-      <Row className="justify-start mb-8">
-        <Button
-          icon={<UserAddOutlined />}
-          type="primary"
-          onClick={() => setShow(true)}
-        >
-          Thêm nhân sự mới
-        </Button>
-      </Row>
       <Table
         showHeader={true}
         rowHoverable

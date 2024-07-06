@@ -5,7 +5,16 @@ import {
   ShareAltOutlined,
   TagsOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Card, Row, Space, Tooltip, Watermark } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  message,
+  Row,
+  Space,
+  Tooltip,
+  Watermark,
+} from "antd";
 import Meta from "antd/es/card/Meta";
 import { Product } from "../types/types";
 import { useContext, useState } from "react";
@@ -20,12 +29,14 @@ type CardProductComponentProps = {
   setOpenModalContact: (value: boolean) => void;
   product: Product;
   setUserId: (value: number) => void;
+  isShowTransferButton?: boolean;
 };
 
 export const CardProductComponent = ({
   setOpenModalContact,
   product,
   setUserId,
+  isShowTransferButton = false,
 }: CardProductComponentProps) => {
   const [openModalProductDetail, setOpenModalProductDetail] = useState(false);
   const { employee } = useContext(ProductsContext);
@@ -97,17 +108,30 @@ export const CardProductComponent = ({
                 </p>
               </p>
               <Space>
-                <Button
-                  icon={<ShareAltOutlined />}
-                  onClick={() => window.open(product.location)}
-                />
-                <Button
-                  icon={<PhoneOutlined />}
-                  onClick={() => {
-                    setOpenModalContact(true);
-                    setUserId(product.createdBy || 0);
-                  }}
-                />
+                {isShowTransferButton ? (
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      message.info("Chức năng này sẽ triển khai ở giai đoạn 2")
+                    }
+                  >
+                    Chuyển trạng thái
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      icon={<ShareAltOutlined />}
+                      onClick={() => window.open(product.location)}
+                    />
+                    <Button
+                      icon={<PhoneOutlined />}
+                      onClick={() => {
+                        setOpenModalContact(true);
+                        setUserId(product.createdBy || 0);
+                      }}
+                    />
+                  </>
+                )}
               </Space>
             </Space>
           </div>,

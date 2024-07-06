@@ -1,13 +1,16 @@
-import { Empty, Flex, List, Segmented } from "antd";
+import { Empty, List } from "antd";
 import { CardProductComponent } from "./card-products";
-import { NotificationOutlined, ProfileOutlined } from "@ant-design/icons";
 import { useContext, useMemo, useState } from "react";
 import { ModalContact } from "./modal-contact";
 import { Product } from "../types/types";
 import { ProductsContext } from "../components/product-provider";
 import dayjs from "dayjs";
 
-export const ProductComponent = () => {
+type Props = {
+  isShowTransferButton?: boolean;
+};
+export const ProductComponent = ({ isShowTransferButton = false }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showAll, setShowProduct] = useState(true); //true: show all, false: show new
   const [openModalContact, setOpenModalContact] = useState(false);
   const [userId, setUserId] = useState<number>();
@@ -18,7 +21,6 @@ export const ProductComponent = () => {
     const list =
       (products &&
         products?.filter((product) => {
-          console.log(dayjs().diff(dayjs(product.createdAt), "days"));
           return dayjs().diff(dayjs(product.createdAt), "days") < 1;
         })) ||
       [];
@@ -77,6 +79,7 @@ export const ProductComponent = () => {
             <List.Item key={product.id}>
               <div className="px-2">
                 <CardProductComponent
+                  isShowTransferButton={isShowTransferButton}
                   setOpenModalContact={(value) => setOpenModalContact(value)}
                   setUserId={(value) => setUserId(value)}
                   product={product}

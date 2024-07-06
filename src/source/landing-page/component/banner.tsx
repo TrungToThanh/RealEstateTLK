@@ -14,9 +14,9 @@ export const BannerComponent = () => {
           backgroundSize: "object-cover",
         }}
       >
-        <h1 className="text-4xl font-bold text-white mb-8">
-          XIN CHÀO QUÝ KHÁCH!
-        </h1>
+        <p className="text-4xl font-bold text-white mb-8">
+          XIN KÍNH CHÀO <br /> QUÝ KHÁCH!
+        </p>
         <p className="text-3xl font-bold bg-white rounded-2xl w-60 mx-auto">
           <strong>
             <span className="text-blue-800">Thổ Kim </span>

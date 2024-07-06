@@ -14,7 +14,6 @@ export const ProductTableComponent = () => {
   const newProducts = useMemo(() => {
     const list =
       products?.filter((product) => {
-        console.log(dayjs().diff(dayjs(product.createdAt), "days"));
         return dayjs().diff(dayjs(product.createdAt), "days") < 1;
       }) || [];
     return list;
