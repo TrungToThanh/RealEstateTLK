@@ -11,7 +11,7 @@ type Props = {
 };
 export const ProductComponent = ({ isShowTransferButton = false }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showAll, setShowProduct] = useState(true); //true: show all, false: show new
+  const [showAll] = useState(true); //true: show all, false: show new
   const [openModalContact, setOpenModalContact] = useState(false);
   const [userId, setUserId] = useState<number>();
   const { products } = useContext(ProductsContext);

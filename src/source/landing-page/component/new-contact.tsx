@@ -4,7 +4,6 @@ import {
   YoutubeOutlined,
 } from "@ant-design/icons";
 import { Button, Divider, Flex, Space } from "antd";
-import React from "react";
 
 export const NewContact = () => {
   return (
