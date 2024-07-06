@@ -3,8 +3,8 @@ import { HeaderComponent } from "../../components/header";
 import { BannerComponent } from "./component/banner";
 import { HotProductComponent } from "./component/hot-product";
 import { AboutUs } from "./component/about-us";
-import { ContactComponent } from "./component/contact";
 import { ServicesComponent } from "./component/services";
+import { NewContact } from "./component/new-contact";
 
 const { Content } = Layout;
 
@@ -17,7 +17,7 @@ export const LandingPage = () => {
         <HotProductComponent />
         <AboutUs />
         <ServicesComponent />
-        <ContactComponent />
+        <NewContact />
       </Content>
     </Layout>
   );

@@ -28,7 +28,7 @@ export const ProductComponent = () => {
   return (
     <div>
       <div className="sticky top-0 z-50">
-        <Flex
+        {/* <Flex
           className={`w-full sticky top-0 z-50 items-center justify-between my-2 bg-[#1677ff] p-1 rounded-md`}
         >
           <Segmented
@@ -52,7 +52,7 @@ export const ProductComponent = () => {
             Hiện có:{" "}
             {showAll ? products?.length || 0 : newProducts?.length || 0} tin
           </p>
-        </Flex>
+        </Flex> */}
       </div>
       {!products?.length && !newProducts?.length && (
         <Empty

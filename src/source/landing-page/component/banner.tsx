@@ -8,7 +8,7 @@ export const BannerComponent = () => {
   return (
     <div className="relative z-0 w-full h-full justify-center mx-auto">
       <div
-        className="max-w-7xl mx-auto px-4 py-32 text-center relative z-10"
+        className="max-w-[1200px] mx-auto px-4 py-32 text-center relative z-10"
         style={{
           backgroundImage: `url(${banner})`,
           backgroundSize: "object-cover",
